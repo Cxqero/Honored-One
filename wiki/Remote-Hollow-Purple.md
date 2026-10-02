@@ -3,8 +3,7 @@
 > **The Hollow Purple nuke** (ch. 234–235). A Blue left floating, a Red thrown into the sky as a feint, both chanted
 > back to full power, and the two brought together over the target. It levelled a stretch of Shinjuku.
 
-<p align="center"><img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/nuke_1.gif" width="290"> <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/nuke_2.gif" width="290"> <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/nuke_3.gif" width="290"><br>
-<sub>The whole cinematic, in three parts</sub></p>
+<p align="center"><img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/nuke.gif" width="720"></p>
 
 ## Casting
 Aim at a creature (or the ground) between **24 and 96 blocks** away and **tap `B`**. Your other techniques are locked

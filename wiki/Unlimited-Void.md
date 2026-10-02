@@ -4,10 +4,8 @@
 > boundless information and can't act.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain_1.gif" width="290"> <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain_2.gif" width="290"> <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain_3.gif" width="290"><br>
-  <sub>The full domain</sub><br><br>
-  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain_instant.gif" width="290"><br>
-  <sub>The 0.2-second domain</sub>
+  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain.gif" width="420">
+  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/domain_instant.gif" width="420">
 </p>
 
 ## Casting

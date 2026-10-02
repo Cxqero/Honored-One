@@ -3,7 +3,7 @@
 > **術式反転「赫」 Cursed Technique Reversal: Red.** Positive energy run through Limitless, Blue reversed: a repulsion
 > at least twice its output.
 
-<p align="center"><img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/red.gif" width="480"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/red.gif" width="720"></p>
 
 ## Casting
 
