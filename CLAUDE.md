@@ -41,6 +41,8 @@
 | `checkpoints/` | the checkpoint zips and test jars (not in git) |
 | `backups/` | save/config backups (not in git) |
 | `.tools/` | local build tools and caches (not in git) |
+| `wiki/` | the GitHub wiki's pages and images (published by `setup-github.bat`) |
+| `setup-github.bat` | double-click to publish or update the GitHub repo, release and wiki |
 
 ## Building (Windows, this PC)
 - JDK 22 is installed (`C:\Program Files\Java\jdk-22`); the mod compiles for Java 21.

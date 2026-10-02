@@ -92,11 +92,26 @@ Don't want to trust a downloaded jar? Build your own from this exact source. You
 
 ```
 cd mod
-gradlew.bat build        (Windows)
+.\gradlew.bat build     (Windows)
 ./gradlew build          (macOS / Linux)
 ```
 
 The jar lands in `mod/build/libs/`. Gradle's download is checksum-pinned in `mod/gradle/wrapper/gradle-wrapper.properties`.
+
+### Prove the download is this source
+The build is **reproducible**: building this source gives a jar that is *byte-for-byte identical* to the one on the
+[Releases](../../releases) page. Compare the fingerprints:
+
+```
+certutil -hashfile mod\build\libs\gojo-limitless-0.2.0.jar SHA256     (Windows)
+sha256sum mod/build/libs/gojo-limitless-0.2.0.jar                       (macOS / Linux)
+```
+
+| Release | SHA-256 |
+|---|---|
+| v0.2.0 | `728b2486efa7706eb726e6aa0f1e81c25a971ffb53c5590360cf6a62bd02e86a` |
+
+Same number = same file: nothing was added to the download that isn't in this repository.
 
 **What the mod does on your computer:** reads and writes `config/gojolimitless.json` and changes your world when you
 cast. That's it: no network access, no telemetry, no downloads. Search the code for `http`, `URL` or `Socket` and see

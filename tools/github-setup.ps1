@@ -130,12 +130,18 @@ if (-not $SkipRelease) {
     } elseif (-not (Test-Path $jar)) {
         Write-Host "No checkpoints\gojo-limitless-$version.jar yet: build it first (tools\gradle.ps1 build, then copy it there). Skipping." -ForegroundColor Yellow
     } else {
+        # release notes = the changelog + the jar's fingerprint (the build is reproducible: building this tag gives
+        # the exact same file, so anyone can check the download against the source)
+        $sha = (Get-FileHash $jar -Algorithm SHA256).Hash.ToLower()
         $notes = Get-ChildItem $root -Filter "*Limitless v$version.txt" | Select-Object -First 1
-        if ($notes) {
-            & $gh release create "v$version" $jar --repo $repo --title "Honored One v$version" --notes-file $notes.FullName
-        } else {
-            & $gh release create "v$version" $jar --repo $repo --title "Honored One v$version" --notes "Honored One v$version"
-        }
+        $body = if ($notes) { [IO.File]::ReadAllText($notes.FullName) } else { "Honored One v$version" }
+        $body += "`n`n### Verify this download`n- SHA-256 of ``gojo-limitless-$version.jar``: ``$sha```n" +
+                 "- The build is reproducible: build this tag yourself (``cd mod``, ``.\gradlew.bat build``) and the jar " +
+                 "in ``mod\build\libs`` has the same SHA-256. Same number = same file.`n"
+        $notesFile = Join-Path $root ".tools\release-notes.md"
+        [IO.File]::WriteAllText($notesFile, $body, (New-Object Text.UTF8Encoding($false)))
+        & $gh release create "v$version" $jar --repo $repo --title "Honored One v$version" --notes-file $notesFile
+        if ($LASTEXITCODE -ne 0) { Fail "Creating the release failed (see above)." }
     }
 }
 

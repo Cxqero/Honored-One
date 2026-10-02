@@ -9,12 +9,24 @@ You need a **JDK 21** or newer ([Adoptium Temurin](https://adoptium.net/) works)
 ```
 git clone https://github.com/{{REPO}}.git
 cd {{REPO_NAME}}/mod
-gradlew.bat build        (Windows)
+.\gradlew.bat build     (Windows)
 ./gradlew build          (macOS / Linux)
 ```
 
 The jar appears in `mod/build/libs/`. The first build downloads Gradle (its checksum is pinned in
 `mod/gradle/wrapper/gradle-wrapper.properties`), Minecraft and Fabric from their official servers.
+
+## Prove the download is this source
+The build is **reproducible**: the jar you build is *byte-for-byte identical* to the one on the
+[Releases](https://github.com/{{REPO}}/releases) page. Compare the fingerprints:
+
+```
+certutil -hashfile mod\build\libs\gojo-limitless-{{VERSION}}.jar SHA256     (Windows)
+sha256sum mod/build/libs/gojo-limitless-{{VERSION}}.jar                       (macOS / Linux)
+```
+
+Each release lists its SHA-256 in its notes. Same number = same file: nothing is in the download that isn't in the
+repository.
 
 ## What's where
 | Folder | Contents |

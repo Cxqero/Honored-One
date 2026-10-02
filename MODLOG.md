@@ -99,6 +99,19 @@ Still open:
 - Preview reel for listening outside the game: `checkpoints/sfx_preview_shinjuku.ogg` (+ .txt timestamps).
 - If a fal key arrives later, AI layers can be added on top of these.
 
+### GitHub release setup (2026-10-02)
+- Public name: **Honored One - Gojo Moveset Mod** (mod id stays `gojolimitless`). Repo name default: `Honored-One`.
+- `setup-github.bat` → `tools/github-setup.ps1`: signs in with the GitHub CLI (browser), creates/updates the public repo,
+  pushes `main`, publishes `checkpoints/gojo-limitless-<version>.jar` as release v<version> with the changelog txt as
+  notes, and pushes `wiki/` to the repo's wiki (the first time GitHub needs one "Save page" click; `{{REPO}}`,
+  `{{REPO_NAME}}`, `{{VERSION}}` in the pages are filled in on push). Git uses the gh login for this repo only and the
+  GitHub no-reply email. It warns if the old `gojo-testing` repo from the cloud sessions still exists.
+- Wiki art: `tools/make_wiki_art.py` (frames from `.tools/caps/wiki_cand/`, recorded in game with Bliss).
+- Checks before publishing: every commit authored as Cxqero with a no-reply email, no old name anywhere in the history
+  or the jar, no personal paths, no anime reference frames ever committed, `um publish check` PASS (560 files), no
+  network/process code in the mod (`http`, `URL`, `Socket`, `ProcessBuilder`... none).
+- Gradle wrapper added (`mod/gradlew.bat`), wrapper jar checksum = Gradle's official one, distribution checksum pinned.
+
 ### Offline
 Minecraft has no anti-cheat in the game itself. The online parts are multiplayer servers and Realms. Keeping it
 offline means: play the mod in Singleplayer worlds only, and don't join public servers with this profile.
