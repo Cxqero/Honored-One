@@ -32,15 +32,20 @@ public class BlueCollapseFx implements TransientFx {
         float x = c.lx(pos), y = c.ly(pos), z = c.lz(pos);
         var e = c.matrices().peek();
 
-        // flash: white-blue star that blooms for ~4 ticks
+        // flash: white-blue star that blooms for ~4 ticks. Sized for watching from afar (the glow spans ~18 radii); when
+        // it goes off near the camera (Maximum Output let go overhead) it would white out the whole view, so up close
+        // it shrinks to stay inside the view and dims (the HUD flash still marks the moment)
         float fk = MathHelper.clamp(tt / 5f, 0, 1);
-        float flash = (fk < 0.25f ? fk / 0.25f : (1 - fk) / 0.75f) * 1.4f * G;
+        float dist = (float) c.camera().distanceTo(pos);
+        float near = MathHelper.clamp((dist - r) / (4f * r), 0.3f, 1f);
+        float flash = (fk < 0.25f ? fk / 0.25f : (1 - fk) / 0.75f) * 1.4f * G * near;
+        float cap = Math.max(r, dist * 1.2f);
         if (flash > 0) {
             VertexConsumer vc = c.consumers().getBuffer(VfxLayers.additive("glow_soft"));
-            Vfx.billboard(vc, e, x, y, z, r * 9f, 0, 0.5f * flash, 0.75f * flash, flash, 1);
+            Vfx.billboard(vc, e, x, y, z, Math.min(r * 9f, cap * 1.5f), 0, 0.5f * flash, 0.75f * flash, flash, 1);
             vc = c.consumers().getBuffer(VfxLayers.additive("flash_star"));
-            Vfx.billboard(vc, e, x, y, z, r * 7f, 0, flash, flash, flash, 1);
-            Vfx.billboard(vc, e, x, y, z, r * 4.5f, 0.785f, 0.5f * flash, 0.7f * flash, flash, 1);
+            Vfx.billboard(vc, e, x, y, z, Math.min(r * 7f, cap), 0, flash, flash, flash, 1);
+            Vfx.billboard(vc, e, x, y, z, Math.min(r * 4.5f, cap * 0.65f), 0.785f, 0.5f * flash, 0.7f * flash, flash, 1);
         }
         // spherical shock ring
         VertexConsumer vc = c.consumers().getBuffer(VfxLayers.additive("ring"));

@@ -66,5 +66,6 @@
   "subtitles.gojolimitless.nuke.explosion": "Hollow Purple detonates",
   "subtitles.gojolimitless.purple.impact": "Hollow Purple strikes",
   "block.gojolimitless.domain_floor": "Domain Floor",
-  "subtitles.gojolimitless.nuke.shockwave": "The shockwave hits"
+  "subtitles.gojolimitless.nuke.shockwave": "The shockwave hits",
+  "message.gojolimitless.key_shared": "[Gojo] %1$s is used by both %2$s and %3$s. In a world, the Gojo technique gets it. To keep both, change one in Options → Controls."
 }

@@ -109,6 +109,7 @@ public class RedBlastFx implements TransientFx {
             float px = x + p[0] * travel, py = y + p[1] * travel + lk * R * 0.25f, pz = z + p[2] * travel;
             int frame = Math.min(31, (int) (lk * 32));
             float size = R * p[4] * (0.5f + 0.9f * lk);
+            py = Vfx.restOnGround(py, size, c.origin().y, c.origin().x + px, c.origin().z + pz);
             float a = Math.min(1f, lk * 6f) * (1f - lk * lk) * 0.72f;
             // hot at first, then dusty
             float heat = MathHelper.clamp(1f - lk * 5f, 0f, 1f);

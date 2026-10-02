@@ -172,7 +172,41 @@ public final class CutsceneDirector {
         if (tilt > 0) focus = focus.add(0, Math.tan(tilt) * Math.hypot(focus.x - camX, focus.z - camZ), 0);
         boolean newShot = lastFrame < 0 || i < lastFrame || anyCut(lastFrame, i);
         lastFrame = i;
+        keepInLoadedArea(focus);
         avoidTerrain(fwd, focus, newShot);
+    }
+
+    /**
+     * Chunks only exist around the player, out to the render distance, and Sodium draws terrain and entities by
+     * walking outwards from the camera's own section. A shot framed from farther out than that (the nuke's wide shot
+     * at 6 chunks) would show nothing but fog, effects included. Slide such a camera in along its line to what it
+     * frames until it is back inside the loaded area, and widen the lens by the same ratio so the subject keeps its
+     * size in the frame.
+     */
+    private static void keepInLoadedArea(Vec3d focus) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player == null) return;
+        double maxR = Math.max(24.0, (mc.options.getClampedViewDistance() - 1.5) * 16.0);
+        Vec3d p = mc.player.getPos();
+        double ax = camX - p.x, az = camZ - p.z;
+        if (ax * ax + az * az <= maxR * maxR) return;
+        double vx = focus.x - camX, vy = focus.y - camY, vz = focus.z - camZ;
+        // smallest t in [0, 1] with |(ax, az) + t (vx, vz)| = maxR (horizontal distance from the player)
+        double qa = vx * vx + vz * vz, qb = 2 * (ax * vx + az * vz), qc = ax * ax + az * az - maxR * maxR;
+        double disc = qb * qb - 4 * qa * qc;
+        double t = qa > 1e-9 && disc >= 0 ? (-qb - Math.sqrt(disc)) / (2 * qa) : 1.0;
+        if (t < 0 || t > 0.95) {
+            // what it frames is itself out there: pull the camera straight in instead (the framing shifts a little)
+            double s = maxR / Math.sqrt(ax * ax + az * az);
+            camX = p.x + ax * s;
+            camZ = p.z + az * s;
+            return;
+        }
+        double before = Math.sqrt(vx * vx + vy * vy + vz * vz);
+        camX += vx * t; camY += vy * t; camZ += vz * t;
+        double after = before * (1 - t);
+        double half = Math.toRadians(camFov) * 0.5;
+        camFov = (float) Math.min(110.0, Math.toDegrees(2 * Math.atan(Math.tan(half) * before / Math.max(after, 1e-3))));
     }
 
     private static boolean anyCut(int from, int to) {

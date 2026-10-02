@@ -191,4 +191,17 @@ public final class Vfx {
         float t = MathHelper.clamp((x - e0) / (e1 - e0), 0f, 1f);
         return t * t * (3 - 2 * t);
     }
+
+    /**
+     * A camera-facing smoke card is cut in a hard straight line where it passes into the ground (seen plainly under
+     * shaderpacks). The smoke_puff body is opaque out to ~0.6 of the card's half-size and gone by ~0.78, so a card
+     * whose centre is at least 0.78 half-sizes above the ground is cut only where it is already clear: the puff rests
+     * on the ground. Takes and returns the card's y relative to the effect origin; wx/wz are its world position.
+     */
+    public static float restOnGround(float localY, float size, double originY, double wx, double wz) {
+        var world = MinecraftClient.getInstance().world;
+        if (world == null) return localY;
+        int top = world.getTopY(net.minecraft.world.Heightmap.Type.MOTION_BLOCKING, MathHelper.floor(wx), MathHelper.floor(wz));
+        return Math.max(localY, (float) (top - originY) + 0.78f * size);
+    }
 }

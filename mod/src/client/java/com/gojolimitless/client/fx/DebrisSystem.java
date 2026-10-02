@@ -159,6 +159,9 @@ public final class DebrisSystem {
         for (Piece p : pieces) {
             double x = MathHelper.lerp(td, p.px, p.x), y = MathHelper.lerp(td, p.py, p.y), z = MathHelper.lerp(td, p.pz, p.z);
             float sc = MathHelper.lerp(td, p.prevScale, p.scale);
+            // a block flying through the camera would fill the screen: pieces shrink away within ~3 blocks of it
+            double dc = Math.sqrt(ctx.camera().squaredDistanceTo(x, y, z));
+            sc *= (float) MathHelper.clamp((dc - 1.2) / 2.0, 0.0, 1.0);
             if (sc <= 0.01f) continue;
             float rot = MathHelper.lerp(td, p.prevRot, p.rot);
             bp.set(x, y, z);

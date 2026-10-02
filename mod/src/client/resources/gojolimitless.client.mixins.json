@@ -13,7 +13,8 @@
     "EntityRenderDispatcherMixin",
     "BlockEntityRenderDispatcherMixin",
     "NativeImageAccessor",
-    "SodiumTerrainMixin"
+    "SodiumTerrainMixin",
+    "KeyBindingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -106,6 +106,7 @@ public class PurpleBlastFx implements TransientFx {
                 float rr = fr * (nuke ? 0.45f + 0.75f * h(i * 7 + 3) : (0.55f + 0.4f * h(i * 7 + 3)) * 1.08f);
                 float px = cx + d.x * rr * wide, py = cy + d.y * rr * flat + (tt - hot) * 0.012f * R * h(i * 7 + 4), pz = cz + d.z * rr * wide;
                 float size = fr * (nuke ? 0.75f : 0.62f + 0.0f + 0.35f * h(i * 7 + 5)) * (1f + 0.25f * Vfx.smooth(hot, life, tt)) * (nuke ? 1f + 0.35f * h(i * 7 + 5) : 1f);
+                py = Vfx.restOnGround(py, size, c.origin().y, c.origin().x + px, c.origin().z + pz);
                 int frame = Math.min(SMOKE_FRAMES - 1, 10 + (int) (Vfx.smooth(0, life, tt) * 21));
                 float glow = heat * (0.5f + 0.5f * Math.max(0f, -d.y));             // lit from the fire below
                 float near = near(camHost, px, py, pz, size);
@@ -122,6 +123,7 @@ public class PurpleBlastFx implements TransientFx {
                     float sy = MathHelper.lerp(k, bottom, top);
                     float wob = R * 0.08f * MathHelper.sin(k * 9f + h(j) * 6f);
                     float size = R * (0.42f + 0.18f * h(j + 200)) * (1f - 0.35f * k) * (0.6f + 0.4f * Vfx.smooth(grow, cool, tt));
+                    sy = Vfx.restOnGround(sy, size, c.origin().y, c.origin().x + x + wob, c.origin().z + z + wob * 0.6f);
                     float glow = heat * (1f - k) * 0.8f;
                     Vfx.billboardFrame(vc, e, x + wob, sy, z + wob * 0.6f, size, h(j + 300) * 6.28f,
                             MathHelper.lerp(glow, 0.15f, 0.55f), MathHelper.lerp(glow, 0.1f, 0.18f), MathHelper.lerp(glow, 0.18f, 0.7f),
@@ -273,7 +275,10 @@ public class PurpleBlastFx implements TransientFx {
                 float rr = ringR * (0.88f + 0.12f * h(i + 701)) * (tier == 1 ? 0.95f : 1f);
                 float size = nuke ? R * (0.4f + 0.35f * h(i + 702)) * (0.55f + 0.6f * gk) * (tier == 1 ? 0.8f : 1f)
                         : R * (0.35f + 0.3f * h(i + 702)) * (0.5f + 0.9f * gk) * 0.9f;
-                float px = x + MathHelper.cos(a) * rr, pz = z + MathHelper.sin(a) * rr, py = y + groundOff + size * (tier == 1 ? 0.95f : 0.3f);
+                float px = x + MathHelper.cos(a) * rr, pz = z + MathHelper.sin(a) * rr;
+                // the wall rests on the ground where it is (not at the blast's own ground level); the upper tier stacks on it
+                float py = Vfx.restOnGround(y + groundOff, size, c.origin().y, c.origin().x + px, c.origin().z + pz)
+                        + (tier == 1 ? size * 0.65f : 0f);
                 float al = (nuke ? Math.min(1f, tt / 4f) * (float) Math.pow(1f - gk, 0.9) * (tier == 1 ? 0.5f : 0.85f)
                         : Math.min(1f, gk * 9f) * (float) Math.pow(1f - gk, 1.2) * 0.75f) * near(camHost, px, py, pz, size);
                 int frame = Math.min(SMOKE_FRAMES - 1, (int) (gk * 28));

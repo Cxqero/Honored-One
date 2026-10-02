@@ -27,6 +27,53 @@ Two places to test:
 2. **The Modrinth profile**: the real game with the real shaderpack and GPU. Only after a backup, and with an OK
    for each change.
 
+### Backup before the first modded launch (2026-10-02, with your OK)
+- Copied from `%APPDATA%\ModrinthApp\profiles\FABRIC MOD TESTING ZONE`: `saves\MOD TESTER WORLD`, `config\`,
+  `options.txt` → `backups\2026-10-02_FABRIC-MOD-TESTING-ZONE\` (31 files), plus `mods-list-before.txt`
+  (the mods that were installed: C2ME, Fabric API, Iris 1.8.14 beta, Reese's Sodium Options, Sodium 0.8.13).
+- **To restore:** close the game, then copy `saves\MOD TESTER WORLD`, `config\` and `options.txt` from that backup
+  folder back into the profile folder (replace when asked), and delete `mods\gojo-limitless-*.jar` from the profile
+  to remove the mod.
+
+### Tools installed (all inside `.tools/`, official sources)
+| Tool | Version | From | Why |
+|---|---|---|---|
+| Gradle | 9.5.1 | services.gradle.org (checksum verified) | builds the mod (Loom 1.17.21 needs Gradle 9.5) |
+| Blender | 4.5.14 LTS (portable zip) | download.blender.org (checksum verified) | the same version the effects were made with |
+| uv + Python 3.11 venv | uv 0.12.22 | astral-sh/uv GitHub | numpy/scipy/pillow/soundfile/pyloudnorm for audio + image scripts |
+| ffmpeg | BtbN build (2026-10-01) | github.com/BtbN/FFmpeg-Builds (approved) | recording the game window (`tools/record.ps1`) |
+
+Gotchas found on the way:
+- uv's `python install` drops a `python3.11.exe` shim in `%USERPROFILE%\.local\bin`; removed it.
+- The newest ffmpeg's NVENC needs NVIDIA driver 610+ (this PC has 581.57), so recording encodes with x264.
+- Blender's OptiX (GPU) runs OSL but cut nuke_collide's filaments at a hard edge; renders stay on the CPU
+  (`blender/lib/device.py`, opt in with `GOJO_BLENDER_DEVICE=GPU`). First OptiX run compiles kernels for ~8 min.
+- A Gradle 9.4 daemon kept files locked; daemons are now off (`org.gradle.daemon=false`).
+- Loom refuses mods built with a newer Loom: Sodium 0.8.13 needs Loom 1.17.21 in the dev client.
+- In the dev client Iris 1.8.14-beta crashes (its refmap can't be read) and C2ME's nested modules don't load:
+  the real Modrinth profile is the test for those.
+
+### Real-game test, FABRIC MOD TESTING ZONE + Bliss (2026-10-02)
+Setup: Fabric Loader 0.19.5, Sodium 0.8.13, Iris 1.8.14-beta.1, C2ME 0.4.0-alpha.0.29, Reese's Sodium Options,
+Bliss v2.1.2, render distance 6. Recorded with `tools/record.ps1`, reviewed as contact sheets.
+Everything loads and every technique runs, including Unlimited Void hiding the terrain under Sodium 0.8 (never
+tested before). Found and fixed:
+
+| Problem | Cause | Fix | Verified |
+|---|---|---|---|
+| R did nothing (Blue never cast) | Iris binds R to "Reload Shaders"; Minecraft gives a key to one binding only | `KeyBindingMixin`: while playing, technique keys are served first; one chat note on join names any shared key | yes, R casts Blue and holding R charges Maximum Output |
+| Very quick taps sometimes ignored | keys were only polled once a tick | a press is latched until the next tick | built, to verify |
+| Maximum Output let go overhead whited out the screen for ~0.2 s | the collapse flash (glow ~18 radii wide) engulfed the camera | flash shrinks and dims with camera distance | yes |
+| Debris blocks flew through the camera and filled the screen | no near-camera handling | pieces shrink away within ~3 blocks of the camera | yes |
+| Dust/smoke cut by the ground in a hard straight line | puffs placed below ground level | `Vfx.restOnGround`: centre ≥ 0.78 half-sizes above the ground (the puff texture is clear beyond that) | yes (Red) |
+| Nuke wide shot: ~4 s of flat blue, no explosion | at 6 chunks the camera sat outside the loaded area; Sodium draws nothing from there | `CutsceneDirector.keepInLoadedArea`: camera slides in along its line, lens widens to keep the framing | yes |
+
+Still open:
+- Sound: the game reports "Failed to open OpenAL device" on this PC (Windows audio, not the mod).
+- Sound design: remake toward the anime with AI SFX (fal, ElevenLabs SFX), then `audio/master.py` for the mix.
+- Smoke flipbook is grainy (rendered at 16 samples); re-rendering at 96.
+- Purple's leftover smoke reads near-black in daylight (by design since CP07; ask).
+
 ### Offline
 Minecraft has no anti-cheat in the game itself. The online parts are multiplayer servers and Realms. Keeping it
 offline means: play the mod in Singleplayer worlds only, and don't join public servers with this profile.

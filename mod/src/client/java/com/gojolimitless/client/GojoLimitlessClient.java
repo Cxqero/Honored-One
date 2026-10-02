@@ -93,6 +93,7 @@ public class GojoLimitlessClient implements ClientModInitializer {
                 MinecraftClient.getInstance().getSoundManager().play(new OrbLoopSound(orb, max ? ModSounds.BLUE_MAX_LOOP : ModSounds.BLUE_LOOP, max));
             }
         });
+        ClientPlayConnectionEvents.JOIN.register((h, sender, mc) -> Keybinds.onJoin());
         ClientPlayConnectionEvents.DISCONNECT.register((h, mc) -> {
             PoseManager.clear(); FxManager.DEBRIS.clear();
             com.gojolimitless.client.nuke.NukeClient.clear();
