@@ -1,0 +1,1 @@
+<p align="center"><sub><b>Honored One</b> by <b>Cxqero</b> · Minecraft 1.21.1 · Fabric · singleplayer · Unofficial <i>Jujutsu Kaisen</i> fan project · <a href="https://github.com/{{REPO}}">source</a></sub></p>

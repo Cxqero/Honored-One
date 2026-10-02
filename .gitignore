@@ -21,3 +21,4 @@ backups/
 
 # secrets (fal API key)
 .env
+!mod/gradle/wrapper/gradle-wrapper.jar

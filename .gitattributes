@@ -8,3 +8,5 @@
 *.otf binary
 *.jar binary
 *.zip binary
+*.bat text eol=crlf
+gradlew text eol=lf
