@@ -22,13 +22,13 @@ SOUNDS = os.path.join(ROOT, "mod", "src", "main", "resources", "assets", "gojoli
 MIX = {
     # the payoffs: louder than a TNT explosion
     "nuke_explosion": -7.0, "nuke_collide": -8.0, "purple_impact": -8.0, "red_detonate_big": -8.0,
-    "domain_collapse": -8.5, "domain_instant": -8.5, "nuke_bloom": -9.0, "nuke_shockwave": -9.0, "blue_collapse": -9.5,
+    "domain_collapse": -10.0, "domain_instant": -10.0, "nuke_bloom": -9.0, "nuke_shockwave": -9.0, "blue_collapse": -9.5,
     # hits and launches
-    "red_detonate": -9.5, "purple_collide": -10.0, "purple_launch": -10.0, "nuke_converge": -10.0, "domain_open": -10.0,
-    "red_fire": -11.0, "blue_throw": -11.0, "nuke_boost": -11.0, "domain_ink": -11.0, "domain_tunnel": -11.5,
-    "nuke_throw": -12.0,
+    "red_detonate": -9.5, "purple_collide": -10.0, "purple_launch": -10.0, "nuke_converge": -11.5, "domain_open": -10.0,
+    "red_fire": -12.0, "blue_throw": -12.0, "nuke_boost": -11.0, "domain_ink": -11.0, "domain_tunnel": -11.5,
+    "nuke_throw": -12.5,
     # forming, chants, cues
-    "blue_form": -12.0, "purple_form": -12.0, "red_form": -13.0, "blue_charge": -13.0, "blue_incant": -12.0,
+    "blue_form": -12.0, "purple_form": -12.5, "red_form": -13.0, "blue_charge": -13.0, "blue_incant": -12.0,
     "red_incant": -12.0, "purple_incant": -12.0, "nuke_glint": -12.0, "domain_seal": -13.0, "domain_white": -14.0,
     "infinity_toggle": -15.0, "nuke_aftermath": -15.0,
     # details and loops

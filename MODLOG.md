@@ -87,6 +87,18 @@ Still open:
   Physics, recoil and the punch still need a look in game.
 - Note: the project's `tools/` folder was deleted by accident at one point; restored from git (`git restore tools/`).
 
+### Sound pass: "Shinjuku" (2026-10-02)
+- Brief from Cxqero: intimidating, like Gojo at the Shinjuku Showdown. No fal key, so made in code:
+  `audio/heavy.py` (toolkit: pitch-dropping sub hits, metallic space cracks, saturated booms, risers, reverse
+  swells, dark formant choir, temple bells, shatter, convolution halls, stereo) and `audio/build_shinjuku_sfx.py`
+  (all 43 sounds, same names and lengths so every cue stays in sync). The old build_*_sfx.py stay for reference.
+- Mixed by `audio/master.py`'s table. Big booms are sub-heavy, so they reach their loudness with a band-split
+  saturation (sub → harmonics that small speakers can play) and at most 8 dB of limiting.
+- Checked without ears: lengths, NaNs, loop seams, spectrograms (fixed layers cut off mid-ring: every layer now
+  fades over its last sixth).
+- Preview reel for listening outside the game: `checkpoints/sfx_preview_shinjuku.ogg` (+ .txt timestamps).
+- If a fal key arrives later, AI layers can be added on top of these.
+
 ### Offline
 Minecraft has no anti-cheat in the game itself. The online parts are multiplayer servers and Realms. Keeping it
 offline means: play the mod in Singleplayer worlds only, and don't join public servers with this profile.
