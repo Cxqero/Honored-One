@@ -83,6 +83,7 @@ if (-not (Ask "Publish to https://github.com/$repo as a PUBLIC repository?")) { 
 # git uses the GitHub CLI login for this project only (nothing changes in your global git settings);
 # commits use your private GitHub no-reply address, never your real email
 $cred = "!'" + ($gh -replace '\\', '/') + "' auth git-credential"
+git config --unset-all credential.helper 2>$null
 git config credential.helper '""'
 git config --add credential.helper $cred
 git config user.name $owner
