@@ -1,0 +1,128 @@
+## Gojo Satoru - Limitless v0.2.0
+
+Alpha release.
+
+### Techniques
+- **Lapse: Blue** (tap **R**) — a singularity opens at your crosshair, pulls in creatures and items, tears the terrain into flying debris and swallows it, then collapses with a crushing blast that leaves a crater
+- **Maximum Output: Blue** (hold **R**) — Blue orbits you and swells for as long as you hold, your raised hand conducting it overhead while it rips up everything around you; let go and it is raised above your head and disperses in streams of blue light (or thrown / collapsed in place, your choice in the settings)
+- **Reversal: Red** (tap **G**) — Red ignites at your fingertip and fires, repelling everything in a violent outward blast with flying debris and billowing dust
+- **Incantation Red** (hold **G**) — chant "Phase, Paramita, Pillars of Light" word by word with laser rays and the screen edges bleeding red, then release a drilling shot that bores through up to 70 blocks of terrain before detonating in a massive blast
+- **Hollow Purple** (tap **V**) — Red and Blue collide between your hands in a short cutscene and the imaginary mass rushes forth, erasing everything in its path for 140 blocks and exploding where it first strikes
+- **200% Hollow Purple** (hold **V**) — the full four-line incantation ("Nine Ropes, Polarized Light, Crow and Declaration, Between Front and Back") with hand signs, a charge meter to 200% and a violet screen, then a cinematic release of a giant violet mass that carves a 420-block erased trench
+- **Remote Hollow Purple** (tap **B**, ch. 234–235) — a ~29-second cinematic: Red hurled into the sky, the Six Eyes blazing, Blue boosted by its incantation, you and your target lifted into the air, the Purple incantation as Red and Blue converge with lightning between them, then the imaginary mass blooms, glints and detonates into a fireball, a mushroom column and a shockwave racing across the land; it erases a ~120-block crater while you take only minimal damage (canon) and drift down into it
+- **Domain Expansion: Unlimited Void** (hold **Z**) — the full expansion after S1 E7: Six Eyes close-up, the seal on your fingers, the world turning white, ink bursting with neon lines, the tunnel of information, the flash, and then the void; everyone inside is paralysed by the flood of information while you get Strength, Speed and Resistance; press **Z** again to collapse it with an ink wipe
+- **0.2-second Unlimited Void** (tap **Z**, Shibuya) — the domain opens for an instant and everyone in range is knocked out standing (10 s by default)
+
+### Infinity
+- Passive Infinity, on by default, toggled with **N**
+- Arrows and projectiles slow endlessly as they approach and hang in the air around you
+- Blocks melee hits, mob contact, projectile damage and explosion damage
+- A faint ripple shows where things are stopped
+- Fall damage still applies (canon: Infinity doesn't stop the ground), optional in the settings
+
+### Domain Expansion details
+- The world outside disappears inside the void: terrain, sky, clouds and weather are hidden and everyone floats in space
+- The interior is made in Blender: a 360° nebula panorama, the giant black hole as an animated loop with its ring turning and smoke pouring off, and volumetric wisps drifting around you
+- Sure-hit: victims can't move, turn, attack or use items, and their screen floods with information
+- Anything touching you when it expands is left out (canon: Gojo holding Itadori)
+- Bosses (Wither, Ender Dragon, Warden) shake it off faster
+- Cast it in mid-air and an invisible floor forms across the whole domain so no one falls through; it removes itself when the domain ends
+
+### Cutscenes
+- In-engine cinematic camera moves authored in Blender, played live in your world with your own character
+- Letterboxed, with the HUD hidden; skip with **Enter**
+- Full-screen Blender-rendered inserts: the nuke's collision, implosion and star glint (1080p), and the domain's ink wipe
+- The camera stays clear of hills, trees and tall grass, and flattens plants where it stands
+- Title cards and subtitles for every technique and every chanted word, in kanji and English
+
+### Visuals
+- Your own character and skin are the caster: no Gojo model anywhere
+- Blocky Minecraft-style fingers for every hand sign, in third person, close-ups and first person
+- Every casting animation keyframed in Blender with elbow, knee and torso bends; your arms animate in first person too
+- Six Eyes: your skin's eyes blaze cyan during the big techniques
+- All effect textures made in Blender with Cycles and custom shaders: Blue's vortex, Red's swirl, Purple's plasma, volumetric smoke, ink, nebula and energy ribbons
+- Real block chunks: Blue pulls debris in, Red blasts it out, Purple leaves nothing but clean erased space
+- Explosions for Red, Purple and the nuke: fireballs, shock domes, ground rings, dust walls, embers and lightning
+- Body physics on every casting animation: arms and torso follow through and settle instead of moving stiffly
+- Recoil: firing Red, launching Purple and throwing Blue kick your arms and body back
+- Camera punch: the view snaps in and springs back when a shot leaves your hands
+- Anime impact frames (the black/white negative flicker) on the heaviest hits
+- Anime speed lines during the nuke's throw, boost, leap and rush, and Purple's launch
+- Camera shake, screen flashes and colour grades (red and violet vignettes, the magenta sky)
+
+### Sound
+- 43 original sound effects, all made in code: no samples
+- Shinjuku-style sound design: chest-hitting sub-bass, space cracking like struck metal, distorted booms, a dark choir and temple bells, huge reverb tails
+- Every chanted word has its own hit: hot for Red, cold and inward for Blue, ritual and dark for Purple
+- Domain sounds are in stereo and play around you
+- Mixed so the biggest hits sit on top, never louder than vanilla's loudest sounds
+- Every sound is a resource-pack slot and can be replaced
+
+### Gameplay
+- No cursed energy bar and no cooldowns (canon: Six Eyes efficiency and reverse cursed technique)
+- Terrain destruction with a master switch, an optional mobGriefing rule and a per-tick block budget
+- Containers are never erased unless you allow it
+- Your tamed pets are spared
+- Configurable range, size, speed, damage, knockback and terrain breaking for every technique
+- Remote Hollow Purple: target distances, lift height and radius, erasure radius and speed, damage, self-damage and slow falling
+- Unlimited Void: radius, duration, collapse on recast, who gets caught (players, passive, hostile), boss recovery, your buffs, rooting and cooldown
+- Infinity: slow and stop distances, and what it blocks
+- Client: VFX quality, debris amount, flash strength, camera shake, subtitles, cutscenes, poses, first-person arms, animation physics, impact frames, speed lines, glow and every domain visual
+- Rebindable keys (**R** Blue, **G** Red, **V** Purple, **B** Remote Purple, **Z** Domain, **N** Infinity, **Enter** skip)
+- Full settings screen through Mod Menu, also editable in `config/gojolimitless.json`
+- `/limitless cast <blue|red|purple|nuke|domain> [holdTicks]` — cast a technique (hold time for the charged versions)
+- `/limitless infinity` — toggle Infinity
+- `/limitless reload` — reload the config file without restarting
+- Commands require operator permission
+
+### Compatibility
+- Minecraft **1.21.1**
+- Fabric (tested on Fabric Loader 0.19.5)
+- Fabric API required
+- Player Animator and bendy-lib are bundled inside the mod
+- Mod Menu + YetAnotherConfigLib recommended for the settings screen (optional)
+- Sodium and Iris shader packs supported (tested with Sodium 0.8.13, Iris 1.8.14 and Bliss)
+- Works alongside C2ME
+- Singleplayer
+
+### Changes & additions
+- Every sound redesigned for Shinjuku-arc Gojo: heavier, darker and far more intimidating
+- Rebalanced sound mix: explosions and impacts are now on top instead of being the quietest sounds
+- Added body physics to all casting animations, with a strength setting (0 off, 1 default, 2 loose)
+- Added recoil when you fire Red, launch Purple or throw Blue
+- Added the camera punch on your own shots
+- Added anime impact frames to the nuke's collision, eruption and detonation, 200% Purple, the full Red and the domain opening
+- Added anime speed lines to the nuke and Purple's launch
+- New settings: **Animation Physics**, **Impact Frames**, **Speed Lines**
+- The nuke's full-screen inserts re-rendered at 1080p
+- The nuke now explodes after the glint: fireball, mushroom column, a shockwave across the land and a wide shot of the whole blast
+- Hollow Purple and 200% Purple now explode where they first strike
+- Maximum Output: Blue is now raised overhead and disperses when released, instead of being thrown
+- Unlimited Void's build-up is longer and fuller, with neon lines manifesting from the ink
+- 200% Purple's mass reworked into a deep violet body with a burning rim and lightning crawling over it, with a new release camera
+- Per-technique canon chants (Red, Blue and Purple each have their own incantation)
+- A one-time chat note when a Gojo key is shared with another mod's key
+
+### Fixes & polish
+- Fixed Lapse: Blue not casting with Iris installed (Iris also uses **R** for Reload Shaders); Gojo keys now take priority while you're in a world
+- Fixed very quick key taps sometimes being ignored
+- Fixed the nuke's wide explosion shot showing only fog at low render distances; the camera stays inside the loaded area and widens the lens to keep the framing
+- Fixed Maximum Output: Blue whiting out the whole screen when released overhead
+- Fixed debris blocks filling the screen when they fly past the camera
+- Fixed smoke and dust being cut off in a hard straight line along the ground
+- Fixed explosion sound tails being cut off with a click
+- Fixed Blue ending up inside mountains during the nuke in hilly terrain; the whole layout now rises clear of the land
+- Fixed a visible oval edge in the sky during Red's incantation
+- Fixed a pink ball left hanging after the nuke
+- Energy effects no longer fade into distance fog
+- Smoke from the nuke thins around your camera instead of trapping you inside it
+- Animations reworked for weight: planted stances, recoil the body absorbs, follow-through and breathing holds
+- No more arm through the body during Maximum Output: Blue
+
+### Shader packs
+- Energy effects are drawn on top of the shader pack's finished image, still hidden correctly behind terrain, so packs can't relight, fog, tear or hide them
+- Effects never cast shadows in the pack's shadow pass
+- Unlimited Void hides the world correctly under Sodium and Iris, including Sodium 0.8
+- Cutscene inserts, flashes, colour grades, impact frames and speed lines are drawn on the HUD, so they look the same on every pack
+- Setting: **Effects After Shaderpack** (on by default): turn it off to let the pack render the effects itself
+- Tested with Bliss
