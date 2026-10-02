@@ -475,8 +475,30 @@ final class AutoTest {
     // steps on different ticks get at least one rendered frame between them (shaderpacks on software GL: < 1 fps)
     private static int frames, framesAtStep = -1, lastStepAt = Integer.MIN_VALUE;
 
+    private static boolean opened;
+
+    /**
+     * From the title screen, open the "autotest" world, or create it first (fixed seed GOJO_SEED, creative, cheats on).
+     * tools/mcauto.ps1 deletes it before each run, so every run starts from the same freshly generated terrain.
+     */
+    private static void openWorld(MinecraftClient mc) {
+        opened = true;
+        String name = "autotest";
+        if (mc.getLevelStorage().levelExists(name)) {
+            mc.createIntegratedServerLoader().start(name, () -> mc.setScreen(new net.minecraft.client.gui.screen.TitleScreen()));
+            return;
+        }
+        long seed = Long.parseLong(System.getenv().getOrDefault("GOJO_SEED", "20260929"));
+        var info = new net.minecraft.world.level.LevelInfo(name, net.minecraft.world.GameMode.CREATIVE, false,
+                net.minecraft.world.Difficulty.PEACEFUL, true, new net.minecraft.world.GameRules(),
+                net.minecraft.resource.DataConfiguration.SAFE_MODE);
+        mc.createIntegratedServerLoader().createAndStart(name, info, new net.minecraft.world.gen.GeneratorOptions(seed, true, false),
+                net.minecraft.world.gen.WorldPresets::createDemoOptions, new net.minecraft.client.gui.screen.TitleScreen());
+    }
+
     static void tick(MinecraftClient mc) {
         if (SCENARIO == null) return;
+        if (!opened && mc.world == null && mc.currentScreen instanceof net.minecraft.client.gui.screen.TitleScreen) openWorld(mc);
         if (mc.player == null || mc.world == null || mc.getServer() == null) return;
         if (!built) build();
         // clock = integrated-server ticks, so screenshots stay in sync with the simulation even when rendering is slow

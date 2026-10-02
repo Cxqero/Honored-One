@@ -51,14 +51,20 @@ dependencies {
     modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // Shader testing in the dev client only (never shipped): GOJO_SHADERS=stable → Sodium 0.6 + Iris 1.8.8,
-    // GOJO_SHADERS=newest → Sodium 0.8 + the Iris 1.8.14 beta. Packs go in run/shaderpacks.
+    // GOJO_SHADERS=newest → Sodium 0.8 + the Iris 1.8.14 beta, GOJO_SHADERS=profile → the mods of the Modrinth
+    // test profile "FABRIC MOD TESTING ZONE" (newest + Reese's Sodium Options). Its C2ME can't run here: C2ME is
+    // a bundle of nested modules (c2me-base...) that the dev launch doesn't load, so it is tested in the real
+    // profile. Packs go in run/shaderpacks.
     def shaders = System.getenv("GOJO_SHADERS")
     if (shaders == "stable") {
         modLocalRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-fabric"
         modLocalRuntime "maven.modrinth:iris:1.8.8+1.21.1-fabric"
-    } else if (shaders == "newest") {
+    } else if (shaders == "newest" || shaders == "profile") {
         modLocalRuntime "maven.modrinth:sodium:mc1.21.1-0.8.13-fabric"
         modLocalRuntime "maven.modrinth:iris:1.8.14-beta.1+1.21.1-fabric"
+    }
+    if (shaders == "profile") {
+        modLocalRuntime "maven.modrinth:reeses-sodium-options:mc1.21.1-2.2.4+fabric"
     }
     if (shaders != null) {
         // Iris's own libraries: nested in its jar, but the dev launch doesn't load nested plain-Java jars

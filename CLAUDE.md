@@ -15,6 +15,7 @@
 2. **Official downloads only:** the tool's official GitHub, Nexus Mods, Thunderstore, mod.io, Steam, or **Modrinth**
    (my mod manager). Never mirror sites, re-uploads or forks. The build uses each project's own official Maven
    repository (Fabric, Mojang, Modrinth Maven, the library authors' own Maven) and Gradle from gradle.org.
+   Approved exception: ffmpeg from github.com/BtbN/FFmpeg-Builds (the Windows build ffmpeg.org links to).
 3. **Keep the game folder clean.** Mods are added through the Modrinth App profile, never into a vanilla install.
 4. **Ask before touching anything outside `C:\mods\minecraft`.** That covers the Modrinth profile (mods, saves,
    config), `%APPDATA%`, `%USERPROFILE%` (including `.gradle`), the registry and system installs. List exactly
