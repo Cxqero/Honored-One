@@ -1,0 +1,20 @@
+# Build output and local game runs
+mod/.gradle/
+mod/build/
+mod/run/
+**/__pycache__/
+*.oso
+
+# Reference frames taken from the anime and from fan edits. They stay out of this repository (it is public)
+# and travel in the checkpoint zips instead. The storyboards' text breakdowns are committed.
+docs/storyboard/*_ref_*.jpg
+docs/storyboard/domain_key_*.jpg
+
+# regenerable previews (rendered by the blender scripts)
+blender/*/previews/
+
+# Local-only folders on this PC: checkpoint zips/jars, save backups, build tools and caches
+checkpoints/
+backups/
+.tools/
+*.jar

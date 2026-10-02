@@ -1,0 +1,10 @@
+// Streak line: bright head at uu=1 fading tail toward uu=0 (aspect-wide plane).
+shader streak(float aspect = 8.0, output color Color = 0)
+{
+    float uu = (P[0] / aspect + 1.0) * 0.5;
+    float vv = (P[1] + 1.0) * 0.5;
+    float dv = fabs(vv - 0.5) * 2.0;
+    float along = pow(uu, 1.6) * (1.0 - smoothstep(0.93, 1.0, uu)) + exp(-pow((uu - 0.94) / 0.03, 2.0)) * 1.5;
+    float across = exp(-pow(dv / 0.28, 2.0)) + exp(-pow(dv / 0.08, 2.0));
+    Color = color(along * across);
+}

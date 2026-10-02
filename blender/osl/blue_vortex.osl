@@ -1,0 +1,43 @@
+// Lapse: Blue — logarithmic-spiral vortex of filaments (additive).
+vector rot2(vector p, float a) {
+    float c = cos(a), s = sin(a);
+    return vector(p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]);
+}
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) {
+        f += a * snoise(q);
+        q *= 2.03; a *= 0.5;
+    }
+    return f;
+}
+shader blue_vortex(
+    float arms = 3.0, float twist = 2.6, float sharp = 3.0,
+    float fil_freq = 5.0, float seed = 0.0, float gain = 1.0,
+    float inner_r = 0.10,
+    output color Color = 0)
+{
+    vector p = vector(P[0], P[1], 0);
+    float r = length(p) + 1e-4;
+    float th = atan2(p[1], p[0]);
+    float lg = log(r);
+    // swirled coordinates: continuous everywhere, spiral-shaped detail
+    vector sw = rot2(p, twist * lg);
+    float n1 = fbm(point(sw[0] * fil_freq, sw[1] * fil_freq, seed), 5);
+    float n2 = fbm(point(sw[0] * fil_freq * 2.7, sw[1] * fil_freq * 2.7, seed + 7.3), 4);
+    float phi = th * arms + twist * arms * lg * 0.55 + 1.8 * n1;
+    float arm = pow(0.5 + 0.5 * cos(phi), sharp);
+    float fil = smoothstep(-0.05, 0.55, n2 + 0.25 * arm);
+    // radial profile: rises toward the core, bright inner rim, fades to edge
+    float prof = exp(-pow((r - 0.22) / 0.30, 2.0)) * 1.2 + exp(-pow((r - inner_r) / 0.05, 2.0)) * 1.4;
+    float hole = smoothstep(0.02, inner_r * 0.9, r);
+    float edge = 1.0 - smoothstep(0.62, 0.98, r);
+    float Iv = (arm * 0.85 + fil * 0.55 * (0.4 + arm)) * prof * hole * edge * gain;
+    color deep = color(0.03, 0.14, 0.85);
+    color cyan = color(0.35, 0.85, 1.0);
+    color hot  = color(0.92, 0.98, 1.0);
+    color c = mix(deep, cyan, smoothstep(0.1, 0.7, Iv));
+    c = mix(c, hot, smoothstep(0.8, 1.6, Iv));
+    Color = c * Iv;
+}

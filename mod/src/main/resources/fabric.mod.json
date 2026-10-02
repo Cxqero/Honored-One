@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "gojolimitless",
+  "version": "${version}",
+  "name": "Gojo Satoru: Limitless",
+  "description": "Lapse: Blue, Reversal: Red, Hollow Purple, the remote Purple and Domain Expansion: Unlimited Void, with Blender-made VFX, in-engine cutscenes and shaderpack-safe rendering.",
+  "authors": ["Cxqero"],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/gojolimitless/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.gojolimitless.GojoLimitless"],
+    "client": ["com.gojolimitless.client.GojoLimitlessClient"],
+    "modmenu": ["com.gojolimitless.client.config.ModMenuIntegration"]
+  },
+  "mixins": [
+    "gojolimitless.mixins.json",
+    { "config": "gojolimitless.client.mixins.json", "environment": "client" }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*",
+    "playeranimator": ">=2.0.4",
+    "bendy-lib": "*"
+  },
+  "suggests": {
+    "yet_another_config_lib_v3": "*",
+    "modmenu": "*",
+    "iris": "*"
+  }
+}

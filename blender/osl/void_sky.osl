@@ -1,0 +1,33 @@
+// Unlimited Void — the inside of the barrier: deep navy space, dense stars, faint blue-violet nebula.
+// Equirectangular: uv from the plane (x in [-2,2] → longitude, y in [-1,1] → latitude).
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * snoise(q); q *= 2.03; a *= 0.5; }
+    return f;
+}
+float hash3(point p) { return cellnoise(p); }
+shader void_sky(float seed = 3.0, output color Color = 0)
+{
+    float lon = P[0] / 2.0 * M_PI, lat = P[1] * M_PI_2;
+    point d = point(cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon));   // point on the unit sphere (seamless)
+    color base = color(0.0035, 0.0075, 0.021);
+    float neb = fbm(d * 2.2 + point(seed, 0, 0), 6);
+    float neb2 = fbm(d * 5.0 + point(0, seed, 0), 5);
+    color nc = mix(color(0.012, 0.025, 0.07), color(0.035, 0.03, 0.08), smoothstep(-0.3, 0.4, neb2));
+    color c = base + nc * smoothstep(-0.05, 0.6, neb) * 0.9;
+    // stars: several cell sizes
+    float s = 0.0;
+    for (int k = 0; k < 3; k++) {
+        float sc = 60.0 * pow(2.6, k);
+        point q = d * sc;
+        point cell = floor(q);
+        float h = hash3(cell + point(k * 17, seed, 0));
+        point cen = cell + point(hash3(cell + point(1, 2, 3)), hash3(cell + point(4, 5, 6)), hash3(cell + point(7, 8, 9)));
+        float dist = length(q - cen);
+        float bright = step(0.8 - 0.07 * k, h) * pow(hash3(cell + point(9, 9, 9)), 3.0);
+        s += bright * exp(-pow(dist / (0.045 + 0.02 * (2 - k)), 2.0)) * (2.4 - 0.6 * k);
+    }
+    c += color(0.85, 0.9, 1.0) * s;
+    Color = c;
+}

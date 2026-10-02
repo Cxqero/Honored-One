@@ -1,0 +1,6 @@
+// Tiny intense point; the 4-point star comes from the compositor STREAKS glare.
+shader point_src(float w = 0.012, float i = 60.0, output color Color = 0)
+{
+    float d = length(vector(P[0], P[1], 0));
+    Color = color(exp(-pow(d / w, 2.0)) * i);
+}

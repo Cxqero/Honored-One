@@ -1,0 +1,29 @@
+// Tileable (along U) anime brush stroke for Blue's spiral arms and the boost streak: a hot solid edge along one
+// side, fine slanted hatching through the body, a ragged fading inner edge. No gaps (the old segmented ribbon read
+// as a turbine).
+// Plane spans x in [-aspect, aspect], y in [-1, 1]; uu = (x/aspect+1)/2 along the stroke, vv = (y+1)/2 across it.
+shader ribbon_brush(float aspect = 8.0, float hatch = 70.0, float slant = 0.35, float seed = 0.0,
+                    color tint = color(0.25, 0.8, 1.0),
+                    output color Color = 0)
+{
+    float uu = (P[0] / aspect + 1.0) * 0.5;
+    float vv = (P[1] + 1.0) * 0.5;                    // 0 = the hot outer edge, 1 = the ragged inner edge
+    // ragged inner edge: the stroke's width wanders along its length
+    float wob = pnoise(point(uu * 11.0, seed, 0.3), point(11.0, 0, 0)) * 0.5
+              + pnoise(point(uu * 37.0, seed + 3.0, 0.7), point(37.0, 0, 0)) * 0.25;
+    float inner = 0.62 + 0.3 * wob;
+    float body = 1.0 - smoothstep(inner - 0.12, inner + 0.04, vv);
+    // slanted hatching (tileable: an integer number of hatches across the tile)
+    float h = uu * hatch + vv * slant * hatch / aspect * 4.0;
+    float jitter = pnoise(point(floor(h) * 0.37, seed + 9.0, 0.0), point(hatch * 0.37, 0, 0));
+    float line = 0.5 + 0.5 * cos(6.2832 * h);
+    float hatchv = smoothstep(0.35, 0.9, line) * (0.2 + 0.8 * jitter * jitter);
+    float swell = 0.7 + 0.3 * pnoise(point(uu * 5.0, seed + 17.0, 0.0), point(5.0, 0, 0));
+    // the hot edge
+    float edge = exp(-pow(vv / 0.075, 2.0));
+    float Iv = (body * (0.28 + 1.0 * hatchv) + edge * 1.7) * swell;
+    float fade_edge = 1.0 - smoothstep(0.0, 0.02, -vv);   // (keeps the outer lip crisp)
+    Iv *= fade_edge;
+    color c = mix(tint, color(1.0), smoothstep(0.9, 2.2, Iv));
+    Color = c * Iv;
+}

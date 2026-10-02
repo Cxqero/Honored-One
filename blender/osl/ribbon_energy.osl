@@ -1,0 +1,26 @@
+// Tileable (along U) energy ribbon: brush-stroke segments with dark gaps and a white-hot spine.
+// Plane spans x in [-aspect, aspect], y in [-1, 1]; uu = (x/aspect+1)/2, vv = (y+1)/2.
+shader ribbon_energy(float aspect = 8.0, float seg_freq = 9.0, float seed = 0.0,
+                     float duty = 0.5,
+                     color tint = color(0.30, 0.82, 1.0),
+                     output color Color = 0)
+{
+    float uu = (P[0] / aspect + 1.0) * 0.5;
+    float vv = (P[1] + 1.0) * 0.5;
+    float dv = fabs(vv - 0.5) * 2.0;             // 0 at spine, 1 at edges
+    // unsigned periodic noise in [0,1]; threshold -> segments with gaps
+    float segs = pnoise(point(uu * seg_freq, seed, 0.0), point(seg_freq, 0, 0));
+    float segs2 = pnoise(point(uu * seg_freq * 3.0, seed + 5.0, 0.0), point(seg_freq * 3.0, 0, 0));
+    float s = segs * 0.75 + segs2 * 0.25;
+    float thr = 1.0 - duty;
+    float mask = smoothstep(thr - 0.03, thr + 0.05, s);
+    // longitudinal brush strokes
+    float strokes = pnoise(point(uu * 4.0, vv * 22.0, seed + 1.7), point(4.0, 0, 0));
+    strokes = smoothstep(0.35, 0.75, strokes);
+    float body = exp(-pow(dv / 0.6, 2.0)) * (0.35 + 0.9 * strokes);
+    float spine = exp(-pow(dv / 0.10, 2.0)) * 2.2 * (0.6 + 0.4 * strokes);
+    float edge = 1.0 - smoothstep(0.85, 1.0, dv);
+    float Iv = (body + spine) * mask * edge;
+    color c = mix(tint * 0.8, color(1.0), smoothstep(1.0, 2.2, Iv));
+    Color = c * Iv;
+}

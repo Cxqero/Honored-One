@@ -1,0 +1,15 @@
+// Lapse: Blue — hot core glow (additive). Plane spans [-1,1]^2.
+shader blue_core(
+    float core_w = 0.045, float core_i = 6.0,
+    float inner_w = 0.12, float inner_i = 1.6,
+    float halo_w = 0.16, float halo_i = 0.55,
+    output color Color = 0)
+{
+    float d = length(vector(P[0], P[1], 0));
+    float core  = exp(-pow(d / core_w, 2.0)) * core_i;
+    float inner = exp(-pow(d / inner_w, 2.0)) * inner_i;
+    float halo  = exp(-d / halo_w) * halo_i;
+    float fade  = 1.0 - smoothstep(0.7, 1.0, d);
+    color c = color(1.0) * core + color(0.55, 0.88, 1.0) * inner + color(0.12, 0.38, 1.0) * halo;
+    Color = c * fade;
+}

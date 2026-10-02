@@ -1,0 +1,9 @@
+// Generic soft disk/ring mask (grayscale) for alpha-blended dark layers.
+shader mask_disk(float ring_r = 0.0, float width = 0.45, float power = 2.0, float edge = 0.98,
+                 output color Color = 0)
+{
+    float d = length(vector(P[0], P[1], 0));
+    float m = exp(-pow(fabs(d - ring_r) / width, power));
+    m *= 1.0 - smoothstep(edge - 0.2, edge, d);
+    Color = color(m);
+}

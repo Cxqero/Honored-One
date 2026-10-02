@@ -1,0 +1,18 @@
+#!/bin/bash
+# Stand-in for the Blender binary when Blender is installed as the PyPI bpy module (see tools/setup_env.sh):
+#   tools/blender -b --factory-startup -P blender/assets/build_red_vfx.py -- --preview
+# runs the script with python3, passing everything after "--" through unchanged. Every script resets to factory
+# settings itself, so -b and --factory-startup are accepted and ignored.
+SCRIPT=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -P|--python) SCRIPT="$2"; shift 2 ;;
+        --) break ;;
+        *) shift ;;
+    esac
+done
+if [ -z "$SCRIPT" ]; then
+    echo "usage: tools/blender [-b] [--factory-startup] -P script.py [-- args]" >&2
+    exit 2
+fi
+exec python3 "$SCRIPT" "$@"

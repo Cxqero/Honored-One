@@ -1,0 +1,9 @@
+// Thin bright ring with soft glow (shockwaves).
+shader ring(float ring_r = 0.78, float w = 0.018, float glow_w = 0.09, output color Color = 0)
+{
+    float d = length(vector(P[0], P[1], 0));
+    float x = fabs(d - ring_r);
+    float Iv = exp(-pow(x / w, 2.0)) * 2.5 + exp(-pow(x / glow_w, 2.0)) * 0.45 + exp(-x / 0.25) * 0.12;
+    Iv *= 1.0 - smoothstep(0.92, 1.0, d);
+    Color = color(Iv);
+}

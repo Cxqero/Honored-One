@@ -1,0 +1,36 @@
+#!/bin/bash
+# usage: mkcheckpoint <number> <outdir> [include-jar:yes|no]
+# Produces:
+#   gojo-mod_checkpoint-NN_DATE.zip   full source tree (code, Blender/audio scripts, assets, docs, reference frames)
+#   gojo-limitless-cpNN.jar           ready-to-play test build (separate file)
+# The zip keeps the historic top-level folder name "gojo-mod/".
+# SPLIT=1: two zips under the 30 MB upload limit that extract into the same gojo-mod/ folder — part1 (everything but
+# the textures) and part2 (mod textures); the regenerable Blender previews are left out.
+N=$1; OUTDIR=${2:?outdir}; J=${3:-yes}
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+D=$(date +%Y-%m-%d)
+NN=$(printf %02d $N)
+OUT=$OUTDIR/gojo-mod_checkpoint-${NN}_$D.zip
+mkdir -p "$OUTDIR"
+STAGE=$(mktemp -d)
+ln -s "$ROOT" "$STAGE/gojo-mod"
+rm -f "$OUT"
+if [ "$SPLIT" = "1" ]; then
+  TEX="gojo-mod/mod/src/main/resources/assets/gojolimitless/textures"
+  OUT=$OUTDIR/gojo-mod_checkpoint-${NN}_${D}_part1-source.zip
+  OUT2=$OUTDIR/gojo-mod_checkpoint-${NN}_${D}_part2-textures.zip
+  rm -f "$OUT" "$OUT2"
+  (cd "$STAGE" && zip -r -q "$OUT" gojo-mod -x "gojo-mod/.git/*" "gojo-mod/mod/.gradle/*" "gojo-mod/mod/build/*" "gojo-mod/mod/run/*" \
+      "*/__pycache__/*" "*.oso" "gojo-mod/blender/*/previews/*" "$TEX/*" \
+    && zip -r -q "$OUT2" "$TEX")
+  ls -la "$OUT2"; unzip -l "$OUT2" | tail -1
+else
+(cd "$STAGE" && zip -r -q "$OUT" gojo-mod -x "gojo-mod/.git/*" "gojo-mod/mod/.gradle/*" "gojo-mod/mod/build/*" "gojo-mod/mod/run/*" \
+    "*/__pycache__/*" "*.oso")
+fi
+rm -rf "$STAGE"
+ls -la "$OUT"; unzip -l "$OUT" | tail -1
+if [ "$J" = "yes" ]; then
+  JAR=$(ls "$ROOT"/mod/build/libs/gojo-limitless-[0-9]*[0-9].jar 2>/dev/null | head -1)
+  if [ -n "$JAR" ]; then cp "$JAR" "$OUTDIR/gojo-limitless-cp${NN}.jar"; ls -la "$OUTDIR/gojo-limitless-cp${NN}.jar"; fi
+fi

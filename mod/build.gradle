@@ -1,0 +1,86 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base { archivesName = project.archives_base_name }
+
+repositories {
+    maven { url = 'https://maven.isxander.dev/releases' }
+    maven { url = 'https://maven.terraformersmc.com/releases' }
+    maven { url = 'https://api.modrinth.com/maven' }
+    maven { url = 'https://maven.kosmx.dev/' }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        "gojolimitless" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+    runs {
+        client {
+            vmArgs '-Xmx2G'
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Player animation with elbow/knee/torso bends and animated arms in first person. Embedded (jar-in-jar), so
+    // players don't install anything extra; Fabric Loader keeps the newest copy if another mod ships them too.
+    modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim_version}"
+    include "dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim_version}"
+    modImplementation "io.github.kosmx.bendy-lib:bendy-lib-fabric:${project.bendy_lib_version}"
+    include "io.github.kosmx.bendy-lib:bendy-lib-fabric:${project.bendy_lib_version}"
+
+    // Optional integrations (compile-only: the mod runs without them)
+    modCompileOnly "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    // present in the dev client so the config screen can be tested
+    modLocalRuntime "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    // Shader testing in the dev client only (never shipped): GOJO_SHADERS=stable → Sodium 0.6 + Iris 1.8.8,
+    // GOJO_SHADERS=newest → Sodium 0.8 + the Iris 1.8.14 beta. Packs go in run/shaderpacks.
+    def shaders = System.getenv("GOJO_SHADERS")
+    if (shaders == "stable") {
+        modLocalRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-fabric"
+        modLocalRuntime "maven.modrinth:iris:1.8.8+1.21.1-fabric"
+    } else if (shaders == "newest") {
+        modLocalRuntime "maven.modrinth:sodium:mc1.21.1-0.8.13-fabric"
+        modLocalRuntime "maven.modrinth:iris:1.8.14-beta.1+1.21.1-fabric"
+    }
+    if (shaders != null) {
+        // Iris's own libraries: nested in its jar, but the dev launch doesn't load nested plain-Java jars
+        localRuntime "org.anarres:jcpp:1.4.14"
+        localRuntime "io.github.douira:glsl-transformer:2.0.1"
+        localRuntime "org.antlr:antlr4-runtime:4.13.1"
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") { expand "version": project.version }
+}
+
+tasks.withType(JavaCompile).configureEach { it.options.release = 21 }
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from("LICENSE") { rename { "${it}_${project.base.archivesName.get()}" } }
+}

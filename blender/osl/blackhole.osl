@@ -1,0 +1,53 @@
+// Unlimited Void — the giant black hole (additive layer; the black disk itself is drawn separately), after S1E7:
+// a large pure-black disk inside a thick ring of smoky blue-grey light that brightens toward its outer limb, a thin
+// white edge there with a prismatic rim (warm gold-orange low on the left, white and cyan above, violet at the right),
+// and a faint halo into the navy dark.  Plane spans [-1,1]^2 (objspace = 1: object coordinates times `scale`).
+// Seamless loops: loopk in [0,1] cross-fades the ring turned by spin and by spin - span (frame L == frame 0).
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * snoise(q); q *= 2.03; a *= 0.5; }
+    return f;
+}
+color hue(float h0) {
+    float h = h0 - floor(h0);
+    return color(clamp(fabs(h * 6.0 - 3.0) - 1.0, 0.0, 1.0),
+                 clamp(2.0 - fabs(h * 6.0 - 2.0), 0.0, 1.0),
+                 clamp(2.0 - fabs(h * 6.0 - 4.0), 0.0, 1.0));
+}
+float smokeAt(float r, float th, float k, float spin, float seed) {
+    float tw = th + 0.9 * (1.0 - k) + spin;
+    float n = fbm(point(cos(tw) * (1.0 + 2.5 * k), sin(tw) * (1.0 + 2.5 * k), r * 7.0 + seed), 6);
+    float fine = fbm(point(cos(th + spin * 1.6) * 6.0, sin(th + spin * 1.6) * 6.0, r * 22.0 + seed + 3.0), 4);
+    return max(0.0, 0.42 + 0.95 * n + 0.3 * fine);
+}
+shader blackhole(float hole = 0.44, float outer = 0.8, float spin = 0.0, float seed = 1.0, float gain = 1.0,
+                 int objspace = 0, float scale = 1.0, float loopk = -1.0, float span = 1.0,
+                 output color Color = 0)
+{
+    point q = objspace ? transform("object", P) * scale : P;
+    float x = q[0], y = q[1];
+    float r = length(vector(x, y, 0));
+    float th = atan2(y, x);
+    float k = clamp((r - hole) / (outer - hole), 0.0, 1.0);        // 0 at the hole, 1 at the outer limb
+    float smoke = loopk < 0.0 ? smokeAt(r, th, k, spin, seed)
+                              : mix(smokeAt(r, th, k, spin, seed), smokeAt(r, th, k, spin - span, seed), loopk);
+    // brightness: soft near the hole, building toward the outer limb, a hard edge there
+    float body = (0.28 + 0.95 * pow(k, 1.6)) * smoothstep(0.0, 0.06, k) * (1.0 - smoothstep(outer, outer + 0.018, r));
+    // one side glows harder (the reference's upper left)
+    float side = 0.75 + 0.25 * cos(th - 2.3);
+    color ringc = mix(color(0.42, 0.5, 0.66), color(0.86, 0.9, 1.0), pow(k, 1.5)) * body * smoke * side;
+    // the white limb
+    float limb = exp(-pow((r - outer * 0.992) / 0.0075, 2.0)) * 1.3 + exp(-pow((r - outer * 0.985) / 0.035, 2.0)) * 0.3;
+    // prismatic rim just outside: colour drifts round the circle
+    float hh = 0.62 + 0.5 * (0.5 + 0.5 * cos(th + 2.36));             // gold-orange toward the lower left
+    color pc = mix(hue(hh), color(1.0), 0.12 + 0.25 * (0.5 + 0.5 * sin(th)));
+    color prism = pc * exp(-pow((r - outer * 1.025) / 0.013, 2.0)) * 1.9;
+    prism += mix(hue(hh + 0.3), color(1.0), 0.4) * exp(-pow((r - outer * 1.065) / 0.02, 2.0)) * 0.4;
+    // halo into the dark
+    color halo = color(0.14, 0.22, 0.42) * exp(-max(r - outer, 0.0) / 0.12) * 0.5 * step(outer * 0.9, r);
+    color c = ringc + color(1.0, 0.98, 0.96) * limb + prism + halo;
+    c *= 1.0 - smoothstep(0.9, 1.0, r);
+    c *= smoothstep(hole * 0.995, hole * 1.01, r);
+    Color = c * gain;
+}

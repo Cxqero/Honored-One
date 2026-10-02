@@ -1,0 +1,16 @@
+// A comet filament / energy streak on a ribbon mesh. uv.x runs 0 (head, at the core) → 1 (tail); uv.y across.
+// Flowing dashes scroll toward the tail with `flow`.
+shader filament(vector uv = vector(0.0), color col = color(0.3, 0.7, 1.0), color hot = color(1.0),
+                float flow = 0.0, float seed = 0.0, float gain = 1.0, float fadepow = 1.6, float dashes = 7.0,
+                output color Color = 0)
+{
+    float s = uv[0];
+    float w = fabs(uv[1] - 0.5) * 2.0;
+    float across = exp(-pow(w / 0.5, 2.0));
+    float fade = pow(max(0.0, 1.0 - s), fadepow) * smoothstep(0.0, 0.05, s);
+    float n = noise("perlin", point(s * dashes - flow, seed * 3.1, seed));
+    float dash = smoothstep(0.3, 0.8, n);
+    float Iv = across * fade * (0.3 + 0.7 * dash) * gain;
+    color c = mix(col, hot, smoothstep(1.2, 2.6, Iv + (1.0 - s) * 0.4));
+    Color = c * Iv;
+}

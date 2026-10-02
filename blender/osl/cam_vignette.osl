@@ -1,0 +1,8 @@
+// Camera-space vignette card: returns an opacity for a black overlay (plane spans [-1,1]^2 in object space).
+shader cam_vignette(float strength = 0.7, float inner = 0.55, float outer = 1.45, float aspect = 1.7778,
+                    output float Fac = 0)
+{
+    point p = transform("object", P);
+    float d = length(vector(p[0], p[1] * 1.12, 0.0));
+    Fac = smoothstep(inner, outer, d) * strength;
+}

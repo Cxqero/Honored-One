@@ -1,0 +1,19 @@
+// Four-point star glint (object space, plane spans [-1,1]^2). Returns an opacity: thin concave spikes on x and y,
+// the diagonals shorter. Used black-on-white for the nuke's final glint.
+shader star4(float len = 1.0, float thick = 0.02, float diag = 0.0, output float Fac = 0)
+{
+    point p = transform("object", P);
+    float x = fabs(p[0]), y = fabs(p[1]);
+    float r = length(vector(x, y, 0.0));
+    // concave spike: width shrinks hyperbolically with distance from the centre
+    float sx = exp(-pow(y / (thick * (1.0 - smoothstep(0.0, len, x)) + 1e-4), 2.0)) * (1.0 - smoothstep(len * 0.6, len, x));
+    float sy = exp(-pow(x / (thick * (1.0 - smoothstep(0.0, len, y)) + 1e-4), 2.0)) * (1.0 - smoothstep(len * 0.6, len, y));
+    float core = exp(-pow(r / (thick * 3.0), 2.0));
+    float spikes = max(sx, sy);
+    if (diag > 0.0) {
+        float u = (x + y) * 0.7071, v = fabs(x - y) * 0.7071;
+        float sd = exp(-pow(v / (thick * 0.6 * (1.0 - smoothstep(0.0, len * diag, u)) + 1e-4), 2.0)) * (1.0 - smoothstep(len * diag * 0.5, len * diag, u));
+        spikes = max(spikes, sd * 0.6);
+    }
+    Fac = clamp(max(spikes, core), 0.0, 1.0);
+}

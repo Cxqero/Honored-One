@@ -1,0 +1,9 @@
+// A glowing sphere: white-hot where it faces the camera, a coloured rim at the silhouette (emission only).
+shader fresnel_orb(color core = color(1.0, 0.95, 1.0), color rim = color(1.0, 0.25, 0.85),
+                   float core_i = 3.0, float rim_i = 4.0, float rim_pow = 2.2, float gain = 1.0,
+                   output color Color = 0)
+{
+    float ndv = fabs(dot(normalize(N), normalize(I)));
+    float r = pow(1.0 - ndv, rim_pow);
+    Color = (core * core_i * pow(ndv, 0.7) + rim * rim_i * r) * gain;
+}

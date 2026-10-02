@@ -1,0 +1,6 @@
+#!/bin/bash
+# stop dev Minecraft JVMs: only real java processes whose args mention the dev launch injector
+ps -eo pid=,comm=,args= | awk '$2=="java" && /devlaunchinjector/ {print $1}' | xargs -r kill 2>/dev/null
+sleep 2
+ps -eo pid=,comm=,args= | awk '$2=="java" && /devlaunchinjector/ {print $1}' | xargs -r kill -9 2>/dev/null
+exit 0

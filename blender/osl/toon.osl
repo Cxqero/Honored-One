@@ -1,0 +1,45 @@
+// Manga-style cel shading for the hand-sign close-ups (emission only, no real lights needed).
+// Grey tones in three bands from a key direction, plus a coloured point light (the Red / Blue orb) with its own
+// soft band and a coloured rim — like the reference panels: greyscale manga art lit by the technique.
+shader toon(
+    color Base = color(0.86, 0.86, 0.88),
+    color Shade = color(0.52, 0.52, 0.56),
+    color Deep = color(0.30, 0.30, 0.34),
+    vector KeyDir = vector(0.35, -0.55, 0.75),
+    float KeyStr = 1.0,
+    float Band1 = 0.30,
+    float Band2 = -0.25,
+    float Soft = 0.035,
+    point LightPos = point(0, 0, 0),
+    color LightCol = color(1.0, 0.12, 0.06),
+    float LightStr = 0.0,
+    float LightRange = 0.06,
+    color RimCol = color(1.0, 0.25, 0.15),
+    float RimStr = 0.0,
+    float RimPow = 3.0,
+    color Tint = color(1.0),
+    output color Out = 0)
+{
+    vector n = normalize(N);
+    vector vw = normalize(I);          // Cycles: I points from the surface toward the viewer
+    if (dot(n, vw) < 0) n = -n;
+    float k = dot(n, normalize(KeyDir));
+    float b1 = smoothstep(Band1 - Soft, Band1 + Soft, k);
+    float b2 = smoothstep(Band2 - Soft, Band2 + Soft, k);
+    color c = mix(Deep, mix(Shade, Base, b1), b2) * KeyStr;
+
+    // the technique's own light: soft-banded, falling off with distance
+    vector d = LightPos - P;
+    float dist = length(d);
+    float ndl = dot(n, d / max(dist, 1e-5));
+    float att = LightStr / (1.0 + pow(dist / LightRange, 2.0));
+    float lb = smoothstep(-0.3, 0.05, ndl) * (0.3 + 0.7 * smoothstep(0.2, 0.35, ndl));   // wrapped, two bands
+    color lit = LightCol * lb * att;
+
+    // rim: edges facing away from the camera glow in the light's colour (only on the side facing the light)
+    float fr = pow(1.0 - max(dot(n, vw), 0.0), RimPow);
+    float rimSide = smoothstep(-0.3, 0.35, ndl);
+    color rim = RimCol * fr * RimStr * rimSide * (0.4 + 0.6 * min(att, 1.0));
+
+    Out = (c + lit + rim) * Tint;
+}

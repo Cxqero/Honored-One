@@ -1,0 +1,32 @@
+{
+  "_comment": [
+    "Blocky Minecraft-style fingers shown during casts (hand signs). Read by the mod (FingerFeature) and by Blender",
+    "(blender/lib/mcchar.py) so previews match the game exactly.",
+    "Geometry is for the RIGHT hand in the arm's model space (pixels), relative to the centre of the arm's bottom",
+    "face (the hand end): +y runs further down the arm, +x points to the palm (toward the body when the arm hangs),",
+    "-z points forward. The left hand mirrors x. Arm width is scaled for slim (3 px) skins.",
+    "Each finger: base [x, y, z], cross-section [sx, sz], two segment lengths, rest direction [pitch, roll] in degrees",
+    "(pitch tips the finger forward toward -z, roll toward the palm).",
+    "Shapes: per finger [curl1, curl2, splay] in degrees. curl bends toward the palm (90 = folded flat under the",
+    "hand), splay leans it forward (+) or back (-) across the other fingers. The thumb adds a 4th value: opposition."
+  ],
+  "fingers": {
+    "index":  {"base": [0.35, -0.2, -1.5], "size": [1.1, 0.95], "segments": [1.8, 1.3], "rest": [0, 0]},
+    "middle": {"base": [0.35, -0.2, -0.5], "size": [1.1, 0.95], "segments": [2.0, 1.5], "rest": [0, 0]},
+    "ring":   {"base": [0.35, -0.2,  0.5], "size": [1.1, 0.95], "segments": [1.85, 1.35], "rest": [0, 0]},
+    "pinky":  {"base": [0.35, -0.2,  1.5], "size": [1.1, 0.95], "segments": [1.5, 1.05], "rest": [0, 0]},
+    "thumb":  {"base": [1.35, -1.4, -1.55], "size": [1.1, 1.1], "segments": [1.5, 1.25], "rest": [32, 18]}
+  },
+  "shapes": {
+    "relaxed": {"index": [18, 24, 3], "middle": [22, 26, 0], "ring": [26, 30, -2], "pinky": [30, 34, -5], "thumb": [12, 14, 0, 10]},
+    "fist":    {"index": [92, 100, 0], "middle": [92, 102, 0], "ring": [92, 102, 0], "pinky": [92, 100, 0], "thumb": [55, 50, -8, 40]},
+    "open":    {"index": [0, 2, 9], "middle": [0, 2, 2], "ring": [2, 4, -5], "pinky": [4, 6, -12], "thumb": [-8, 0, 12, -10]},
+    "two_up":  {"index": [0, 0, -2], "middle": [0, 0, 2], "ring": [92, 102, 0], "pinky": [92, 100, 0], "thumb": [62, 55, -12, 55]},
+    "point":   {"index": [0, 0, 1], "middle": [92, 102, 0], "ring": [92, 102, 0], "pinky": [92, 100, 0], "thumb": [60, 52, -14, 50]},
+    "seal":    {"index": [2, 0, -11], "middle": [0, 0, 13], "ring": [92, 102, 0], "pinky": [92, 100, 0], "thumb": [64, 58, -16, 58]},
+    "horns":   {"index": [0, 0, 6], "middle": [92, 102, 0], "ring": [92, 102, 0], "pinky": [2, 2, -8], "thumb": [60, 55, -10, 55]},
+    "pinch":   {"index": [48, 58, 4], "middle": [0, 0, 0], "ring": [92, 102, 0], "pinky": [92, 100, 0], "thumb": [22, 28, 10, 30]},
+    "grip":    {"index": [62, 74, 0], "middle": [64, 76, 0], "ring": [66, 78, 0], "pinky": [68, 80, 0], "thumb": [30, 36, -6, 30]}
+  },
+  "seal_cross_depth": 0.55
+}

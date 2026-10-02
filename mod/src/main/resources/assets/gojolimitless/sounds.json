@@ -1,0 +1,376 @@
+{
+  "blue.form": {
+    "subtitle": "subtitles.gojolimitless.blue.form",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_form",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "blue.loop": {
+    "subtitle": "subtitles.gojolimitless.blue.loop",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_loop",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "blue.max_loop": {
+    "subtitle": "subtitles.gojolimitless.blue.max_loop",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_max_loop",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "blue.charge": {
+    "subtitle": "subtitles.gojolimitless.blue.charge",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_charge"
+      }
+    ]
+  },
+  "blue.throw": {
+    "subtitle": "subtitles.gojolimitless.blue.throw",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_throw",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "blue.collapse": {
+    "subtitle": "subtitles.gojolimitless.blue.collapse",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_collapse",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "blue.tear": {
+    "subtitle": "subtitles.gojolimitless.blue.tear",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_tear"
+      }
+    ]
+  },
+  "infinity.stop": {
+    "subtitle": "subtitles.gojolimitless.infinity.stop",
+    "sounds": [
+      {
+        "name": "gojolimitless:infinity_stop"
+      }
+    ]
+  },
+  "infinity.toggle": {
+    "subtitle": "subtitles.gojolimitless.infinity.toggle",
+    "sounds": [
+      {
+        "name": "gojolimitless:infinity_toggle"
+      }
+    ]
+  },
+  "red.form": {
+    "subtitle": "subtitles.gojolimitless.red.form",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_form",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "red.charge": {
+    "subtitle": "subtitles.gojolimitless.red.charge",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_charge",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "red.incant": {
+    "subtitle": "subtitles.gojolimitless.red.incant",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_incant",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "red.fire": {
+    "subtitle": "subtitles.gojolimitless.red.fire",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_fire",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "red.fly": {
+    "subtitle": "subtitles.gojolimitless.red.fly",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_fly",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "red.detonate": {
+    "subtitle": "subtitles.gojolimitless.red.detonate",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_detonate",
+        "attenuation_distance": 128
+      }
+    ]
+  },
+  "red.detonate_big": {
+    "subtitle": "subtitles.gojolimitless.red.detonate_big",
+    "sounds": [
+      {
+        "name": "gojolimitless:red_detonate_big",
+        "attenuation_distance": 192
+      }
+    ]
+  },
+  "purple.form": {
+    "subtitle": "subtitles.gojolimitless.purple.form",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_form",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "purple.collide": {
+    "subtitle": "subtitles.gojolimitless.purple.collide",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_collide",
+        "attenuation_distance": 192
+      }
+    ]
+  },
+  "purple.hum": {
+    "subtitle": "subtitles.gojolimitless.purple.hum",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_hum",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "purple.launch": {
+    "subtitle": "subtitles.gojolimitless.purple.launch",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_launch",
+        "attenuation_distance": 256
+      }
+    ]
+  },
+  "purple.rush": {
+    "subtitle": "subtitles.gojolimitless.purple.rush",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_rush",
+        "attenuation_distance": 128
+      }
+    ]
+  },
+  "purple.charge": {
+    "subtitle": "subtitles.gojolimitless.purple.charge",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_charge",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "purple.incant": {
+    "subtitle": "subtitles.gojolimitless.purple.incant",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_incant",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "nuke.throw": {
+    "subtitle": "subtitles.gojolimitless.nuke.throw",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_throw",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "nuke.boost": {
+    "subtitle": "subtitles.gojolimitless.nuke.boost",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_boost",
+        "attenuation_distance": 128
+      }
+    ]
+  },
+  "nuke.converge": {
+    "subtitle": "subtitles.gojolimitless.nuke.converge",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_converge",
+        "attenuation_distance": 200
+      }
+    ]
+  },
+  "nuke.collide": {
+    "subtitle": "subtitles.gojolimitless.nuke.collide",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_collide",
+        "attenuation_distance": 256
+      }
+    ]
+  },
+  "nuke.bloom": {
+    "subtitle": "subtitles.gojolimitless.nuke.bloom",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_bloom",
+        "attenuation_distance": 400
+      }
+    ]
+  },
+  "nuke.glint": {
+    "subtitle": "subtitles.gojolimitless.nuke.glint",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_glint"
+      }
+    ]
+  },
+  "nuke.aftermath": {
+    "subtitle": "subtitles.gojolimitless.nuke.aftermath",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_aftermath",
+        "attenuation_distance": 256
+      }
+    ]
+  },
+  "nuke.sky_hum": {
+    "subtitle": "subtitles.gojolimitless.nuke.sky_hum",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_sky_hum",
+        "attenuation_distance": 160
+      }
+    ]
+  },
+  "blue.incant": {
+    "subtitle": "subtitles.gojolimitless.blue.incant",
+    "sounds": [
+      {
+        "name": "gojolimitless:blue_incant"
+      }
+    ]
+  },
+  "domain.seal": {
+    "subtitle": "subtitles.gojolimitless.domain.seal",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_seal"
+      }
+    ]
+  },
+  "domain.white": {
+    "subtitle": "subtitles.gojolimitless.domain.white",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_white"
+      }
+    ]
+  },
+  "domain.ink": {
+    "subtitle": "subtitles.gojolimitless.domain.ink",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_ink"
+      }
+    ]
+  },
+  "domain.tunnel": {
+    "subtitle": "subtitles.gojolimitless.domain.tunnel",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_tunnel"
+      }
+    ]
+  },
+  "domain.open": {
+    "subtitle": "subtitles.gojolimitless.domain.open",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_open"
+      }
+    ]
+  },
+  "domain.void": {
+    "subtitle": "subtitles.gojolimitless.domain.void",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_void",
+        "stream": true
+      }
+    ]
+  },
+  "domain.collapse": {
+    "subtitle": "subtitles.gojolimitless.domain.collapse",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_collapse"
+      }
+    ]
+  },
+  "domain.instant": {
+    "subtitle": "subtitles.gojolimitless.domain.instant",
+    "sounds": [
+      {
+        "name": "gojolimitless:domain_instant"
+      }
+    ]
+  },
+  "nuke.explosion": {
+    "subtitle": "subtitles.gojolimitless.nuke.explosion",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_explosion",
+        "attenuation_distance": 256
+      }
+    ]
+  },
+  "purple.impact": {
+    "subtitle": "subtitles.gojolimitless.purple.impact",
+    "sounds": [
+      {
+        "name": "gojolimitless:purple_impact",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "nuke.shockwave": {
+    "subtitle": "subtitles.gojolimitless.nuke.shockwave",
+    "sounds": [
+      {
+        "name": "gojolimitless:nuke_shockwave",
+        "attenuation_distance": 256
+      }
+    ]
+  }
+}

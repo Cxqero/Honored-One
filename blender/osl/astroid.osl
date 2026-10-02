@@ -1,0 +1,13 @@
+// Concave four-point star (an astroid, |x/ax|^p + |y/ay|^p <= 1), soft-edged, for the nuke's final glint: black on
+// white in the reference, the vertical arms longest. Object space, the plane spans [-1,1]^2. Returns an opacity.
+shader astroid(float ax = 0.5, float ay = 0.8, float p = 0.42, float soft = 0.18, output float Fac = 0)
+{
+    point q = transform("object", P);
+    float x = fabs(q[0]) / max(ax, 1e-4), y = fabs(q[1]) / max(ay, 1e-4);
+    float s = pow(x, p) + pow(y, p);
+    // soft edge that widens toward the tips (the reference's arms blur out as they thin)
+    float tip = max(x, y);
+    float tc = min(tip, 1.2);
+    float sft = soft * (0.35 + 1.4 * tc * tc);
+    Fac = 1.0 - smoothstep(1.0 - sft, 1.0 + sft, s);
+}

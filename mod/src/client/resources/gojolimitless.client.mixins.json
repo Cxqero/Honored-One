@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gojolimitless.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "CameraMixin",
+    "GameRendererMixin",
+    "KeyboardInputMixin",
+    "EntityLookMixin",
+    "LivingEntityRendererMixin",
+    "WorldRendererMixin",
+    "EntityRenderDispatcherMixin",
+    "BlockEntityRenderDispatcherMixin",
+    "NativeImageAccessor",
+    "SodiumTerrainMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

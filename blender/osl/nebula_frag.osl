@@ -1,0 +1,25 @@
+// White "paper-tear" nebula fragments for the hyperspace tunnel: an atlas of 4x4 torn white shapes with streaky
+// interiors (additive white). Plane spans [-1,1]^2.
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * snoise(q); q *= 2.1; a *= 0.5; }
+    return f;
+}
+shader nebula_frag(output color Color = 0)
+{
+    float uu = (P[0] + 1.0) * 2.0, vv = (1.0 - P[1]) * 2.0;     // 0..4
+    float cx = floor(uu), cy = floor(vv);
+    float id = cx + cy * 4.0;
+    float lx = (uu - cx) * 2.0 - 1.0, ly = (vv - cy) * 2.0 - 1.0;   // -1..1 in the cell
+    // stretched blob with a torn edge
+    float sx = 0.55 + 0.35 * cellnoise(point(id, 1, 0)), sy = 0.18 + 0.2 * cellnoise(point(id, 2, 0));
+    float rot = cellnoise(point(id, 3, 0)) * 0.6 - 0.3;
+    float X = lx * cos(rot) - ly * sin(rot), Y = lx * sin(rot) + ly * cos(rot);
+    float d = length(vector(X / sx, Y / sy, 0));
+    float tear = fbm(point(X * 5.0, Y * 5.0, id * 3.7), 5) * 0.55 + fbm(point(X * 22.0, Y * 22.0, id), 3) * 0.2;
+    float body = 1.0 - smoothstep(0.75, 0.95, d + tear);
+    float streak = 0.65 + 0.35 * snoise(point(X * 2.0, Y * 28.0, id));
+    float edgefade = 1.0 - smoothstep(0.8, 0.98, max(fabs(lx), fabs(ly)));
+    Color = color(1.0, 0.97, 1.0) * body * streak * edgefade * 1.6;
+}

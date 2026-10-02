@@ -1,0 +1,12 @@
+// Radial glow for a camera-facing billboard (object space, plane spans [-1,1]^2): white-hot core + coloured halo.
+shader orb_glow(
+    color core = color(1.0, 0.92, 0.88), float core_w = 0.07, float core_i = 10.0,
+    color halo = color(1.0, 0.12, 0.06), float halo_w = 0.32, float halo_i = 1.2, float halo_pow = 1.3,
+    float gain = 1.0,
+    output color Color = 0)
+{
+    point p = transform("object", P);
+    float d = length(vector(p[0], p[1], 0));
+    color c = core * exp(-pow(d / core_w, 2.0)) * core_i + halo * exp(-pow(d / halo_w, halo_pow)) * halo_i;
+    Color = c * (1.0 - smoothstep(0.75, 1.0, d)) * gain;
+}

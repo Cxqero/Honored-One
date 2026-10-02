@@ -1,0 +1,49 @@
+// Stormy dusk sky for the close-up inserts: domain-warped cloud masses, a dark horizon band, and a red (or any
+// colour) flood that spreads from the technique's screen position as it charges.  Plane spans [-1,1]^2 (object).
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * snoise(q); q *= 2.03; a *= 0.5; }
+    return f;
+}
+float billow(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * (1.0 - fabs(snoise(q))); q *= 2.07; a *= 0.5; }
+    return f;
+}
+shader storm(
+    float aspect = 1.7778, float tm = 0.0, float scale = 1.4,
+    float flood = 0.0, float cx = 0.0, float cy = 0.3, float glow = 0.0,
+    color sky_lo = color(0.020, 0.026, 0.045), color sky_hi = color(0.075, 0.09, 0.13),
+    color cloud_lit = color(0.30, 0.33, 0.42), color cloud_dark = color(0.05, 0.06, 0.09),
+    color tint = color(1.0, 0.10, 0.07), float horizon = -0.55,
+    output color Color = 0)
+{
+    point Po = transform("object", P);
+    float x = Po[0] * aspect, y = Po[1];
+    // soft billowing masses: gentle domain warp, stretched horizontally like a storm front
+    point q = point(x * scale * 0.8 + tm * 0.03, y * scale * 1.6, 0.0);
+    float w1 = fbm(q * 0.7 + point(0.0, 0.0, tm * 0.05), 3);
+    float w2 = fbm(q * 0.7 + point(5.2, 1.3, 7.0 + tm * 0.05), 3);
+    point qw = q + point(w1, w2, 0.0) * 0.45;
+    float n = billow(qw, 5) + 0.35 * fbm(q * 0.35 + point(0, 0, 9.0), 3);
+    float body = smoothstep(0.35, 0.95, n + 0.25 * y);
+    // lit tops / dark bellies: offset sample gives a cheap sense of volume
+    float n2 = billow(qw + point(0.0, -0.05, 0.0), 5) + 0.35 * fbm(q * 0.35 + point(0, -0.05, 9.0), 3);
+    float lit = clamp((n - n2) * 9.0 + 0.45, 0.0, 1.0);
+    color base = mix(sky_lo, sky_hi, smoothstep(-1.0, 1.0, y));
+    color cl = mix(cloud_dark, cloud_lit, lit);
+    color c = mix(base, cl, body * 0.85);
+    // horizon: a dark distant ridge line
+    float ridge = horizon + 0.06 * fbm(point(x * 1.7, 0.0, 11.0), 4) + 0.03 * fbm(point(x * 6.0, 0.0, 13.0), 3);
+    float land = 1.0 - smoothstep(ridge - 0.004, ridge + 0.004, y);
+    c = mix(c, color(0.012, 0.014, 0.022), land);
+    // the technique's light floods the sky around it
+    float d = length(vector(x - cx * aspect, y - cy, 0.0));
+    float spread = mix(0.25, 2.2, flood);
+    float g = exp(-pow(d / spread, 1.4));
+    color flooded = c * (1.0 - 0.6 * flood) + tint * (0.10 + 0.9 * body * (0.35 + 0.65 * lit)) * g * flood * 1.4;
+    flooded += tint * exp(-pow(d / 0.35, 1.2)) * glow;
+    Color = mix(c, flooded, clamp(flood + glow, 0.0, 1.0));
+}

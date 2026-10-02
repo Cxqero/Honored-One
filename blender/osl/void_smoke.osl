@@ -1,0 +1,22 @@
+// Unlimited Void — blue-white smoke streaming off the black hole's ring to one side (additive).
+// Plane spans x in [-2,2], y in [-1,1]; the stream starts at the left edge and fans out to the right.
+float fbm(point p, int oct) {
+    float a = 0.5, f = 0.0;
+    point q = p;
+    for (int i = 0; i < oct; i++) { f += a * snoise(q); q *= 2.07; a *= 0.5; }
+    return f;
+}
+shader void_smoke(float seed = 2.0, float tm = 0.0, output color Color = 0)
+{
+    float uu = (P[0] + 2.0) / 4.0, vv = P[1];
+    float width = 0.12 + 0.55 * pow(uu, 1.2);
+    float centre = 0.08 * sin(uu * 5.0 + seed) - 0.1 * uu;
+    float across = exp(-pow((vv - centre) / width, 2.0));
+    point q = point(uu * 5.0 - tm, vv * 4.0 / (0.5 + uu), seed);
+    float n = fbm(q + point(fbm(q * 0.7, 3), fbm(q * 0.7 + point(3, 1, 0), 3), 0) * 1.2, 6);
+    float wisp = smoothstep(-0.05, 0.6, n) * across;
+    float along = smoothstep(0.0, 0.06, uu) * pow(1.0 - uu, 1.4);
+    float Iv = pow(wisp, 0.8) * along * 3.2;
+    color c = mix(color(0.35, 0.5, 0.95), color(0.85, 0.92, 1.0), smoothstep(0.3, 1.0, Iv));
+    Color = c * Iv;
+}

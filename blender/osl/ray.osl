@@ -1,0 +1,16 @@
+// Laser ray (along U): white-hot core line, crimson falloff, tapered ends, subtle flicker bands.
+shader ray(float aspect = 16.0, color tint = color(1.0, 0.12, 0.06), int objspace = 0, float phase = 0.0,
+           output color Color = 0)
+{
+    point Po = objspace ? transform("object", P) : P;
+    float uu = objspace ? (Po[0] + 1.0) * 0.5 : (Po[0] / aspect + 1.0) * 0.5;
+    float vv = (Po[1] + 1.0) * 0.5;
+    float dv = fabs(vv - 0.5) * 2.0;
+    float taper = smoothstep(0.0, 0.08, uu) * (1.0 - smoothstep(0.55, 1.0, uu));
+    float bands = 0.8 + 0.2 * noise("perlin", point(uu * 40.0 - phase, 0.5, 0.0));
+    float core = exp(-pow(dv / 0.07, 2.0)) * 2.4;
+    float glow = exp(-pow(dv / 0.35, 2.0)) * 0.7 + exp(-dv / 0.5) * 0.15;
+    float w = (core + glow) * taper * bands;
+    color c = mix(tint, color(1.0, 0.95, 0.9), smoothstep(0.8, 2.0, w));
+    Color = c * w;
+}

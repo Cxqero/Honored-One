@@ -1,0 +1,16 @@
+#!/bin/bash
+# usage: mcsheet <out.png> <prefix> name1 name2 ... (2 columns, 800px each; reads mod/run/screenshots/<prefix>_<name>.png)
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+OUT=$1; PRE=$2; shift 2
+python3 - "$OUT" "$PRE" "$ROOT/mod/run/screenshots" "$@" <<'PY'
+import sys
+from PIL import Image, ImageDraw
+out, pre, shots, names = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
+w=800; h=450; cols=2
+rows=(len(names)+cols-1)//cols
+S=Image.new('RGB',(cols*w,rows*h)); d=ImageDraw.Draw(S)
+for i,n in enumerate(names):
+    im=Image.open(f'{shots}/{pre}_{n}.png').convert('RGB').resize((w,h))
+    x,y=(i%cols)*w,(i//cols)*h; S.paste(im,(x,y)); d.text((x+6,y+6),n,fill=(255,255,0))
+S.save(out)
+PY

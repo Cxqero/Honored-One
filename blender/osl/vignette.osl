@@ -1,0 +1,7 @@
+// HUD vignette mask (grayscale): 0 in the centre, 1 at the edges; aspect-correct ellipse.
+shader vignette(float aspect = 1.777, float inner = 0.55, float outer = 1.25, output color Color = 0)
+{
+    float x = P[0] / aspect, y = P[1];
+    float d = length(vector(x * 1.0, y * 1.05, 0));
+    Color = color(smoothstep(inner, outer, d));
+}

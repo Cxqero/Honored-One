@@ -1,0 +1,16 @@
+#!/bin/bash
+# usage: mcauto <scenario> [timeoutSeconds]  (extra env: GOJO_X, GOJO_Z, GOJO_YAW, GOJO_TIME, GOJO_SLOW, GOJO_BASE)
+# Runs a scripted AutoTest scenario in the dev client under Xvfb + software GL; screenshots go to mod/run/screenshots/.
+S=$1; T=${2:-1200}
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+cd "$ROOT/mod"
+pgrep -x Xvfb >/dev/null || (Xvfb :99 -screen 0 1280x720x24 >/dev/null 2>&1 &)
+sleep 1
+export DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe GOJO_AUTOTEST=$S
+rm -rf run/saves/autotest && cp -r ${GOJO_BASE:-run/autotest_base} run/saves/autotest && rm -f run/saves/autotest/session.lock \
+  && python3 -c "import nbtlib;f=nbtlib.load('run/saves/autotest/level.dat');f['Data']['allowCommands']=nbtlib.Byte(1);f.save()"
+mkdir -p run/autotest-logs
+LOG=run/autotest-logs/client_$S.log
+timeout $T gradle runClient --no-daemon -q --args="--quickPlaySingleplayer autotest --width ${GOJO_W:-1280} --height ${GOJO_H:-720}" > $LOG 2>&1
+echo "exit $? (log: mod/$LOG)"
+grep -E "\[autotest\]|Exception|ERROR|CHAT" $LOG | grep -v OpenAL | cut -c1-220 | head -60
