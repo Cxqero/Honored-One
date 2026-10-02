@@ -29,7 +29,7 @@ def reset():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
-    sc.cycles.device = "CPU"
+    import device; device.use_best(sc)          # CPU; the GPU with GOJO_BLENDER_DEVICE=GPU
     sc.cycles.shading_system = True          # OSL
     sc.cycles.use_denoising = False
     sc.cycles.max_bounces = 0

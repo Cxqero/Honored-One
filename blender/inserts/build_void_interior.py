@@ -39,7 +39,7 @@ def scene(w, h, samples):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
-    sc.cycles.device = "CPU"
+    import device; device.use_best(sc)          # CPU; the GPU with GOJO_BLENDER_DEVICE=GPU
     sc.cycles.shading_system = True          # OSL
     sc.cycles.samples = O["samples"] or samples
     sc.cycles.use_denoising = True

@@ -16,7 +16,7 @@
 | G | Reversal: Red: tap = quick Red · hold = incantation Red (Phase, Paramita, Pillars of Light), release to fire |
 | V | Hollow Purple: tap = Purple with a short cutscene · hold = full incantation, 200% Purple with cutscene |
 | B | Remote Hollow Purple ("the nuke"): aim at a creature (or the ground) and tap — Red into the sky, the Blue incantation, you and the target lifted, the Purple incantation, the erasure. ~27 s cinematic; other techniques are locked until it ends |
-| Z | Domain Expansion: Unlimited Void (later build) |
+| Z | Domain Expansion: Unlimited Void: tap = the 0.2-second domain (everyone in range paralysed) · hold = the full domain with its cutscene · press again to collapse it |
 | N | Toggle Infinity (on by default) |
 | Enter | Skip a cutscene |
 

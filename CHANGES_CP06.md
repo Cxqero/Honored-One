@@ -54,15 +54,15 @@ blocky Minecraft-style fingers in your skin's arm colour.
   More and more lines draw themselves out of the ink and pulse, torn fragments of the void show through, and the
   tunnel gathers speed into the flash. New camera track, a longer seal hold and a longer tunnel sound.
 
-## Domain Expansion: Unlimited Void (key V): new
-- **Hold V: the full domain** (~6.5 s), after S1E7:
+## Domain Expansion: Unlimited Void (key Z): new
+- **Hold Z: the full domain** (~6.5 s), after S1E7:
   1. Six Eyes close-up.
   2. The seal, in close-up on your blocky fingers.
   3. The world turns white with a pink cast on the characters.
   4. Ink bursts in with neon lines.
   5. A tunnel of information, then the flash.
   6. **The void**.
-- **Tap V: the 0.2-second domain** (Shibuya). It opens for an instant and everyone in range is paralysed (10 s by
+- **Tap Z: the 0.2-second domain** (Shibuya). It opens for an instant and everyone in range is paralysed (10 s by
   default). You keep your buffs (your call, listed as a deviation in `docs/LORE.md` §7).
 - **The inside is made in Blender** (Cycles):
   - a 360° void panorama (deep navy and teal nebula, dense stars, violet dust)
@@ -72,7 +72,7 @@ blocky Minecraft-style fingers in your skin's arm colour.
   Everyone floats in the void (S1E7's look).
 - **Paralysis ("sure-hit")**: everyone caught can't move, turn, attack or use items. Their screen floods with
   information (neon streaks). Bosses shake it off after 3 s (adjustable).
-- **Cancel it any time: press V again.** The void is wiped away by white ink and you're back in the world. The
+- **Cancel it any time: press Z again.** The void is wiped away by white ink and you're back in the world. The
   cooldown starts when the domain ends, so the instant domain is ready again straight away.
 - Sounds: seal, white, ink, tunnel, open, the void's ambience (a seamless loop), collapse and instant.
 - **Settings** (new "Domain Expansion" category, plus Client toggles):
