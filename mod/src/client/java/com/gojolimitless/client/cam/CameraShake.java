@@ -36,6 +36,28 @@ public final class CameraShake {
         return new float[]{yaw, pitch};
     }
 
+    private static long punchStart = -1L;
+    private static float punchAmount;
+
+    /**
+     * Lens punch: the view snaps in (narrower field of view) and springs back out over ~0.35 s, the hit-feel of a
+     * shot leaving your hands. {@code amount} is the fraction of the field of view taken away at the peak (0.1 = 10 %).
+     */
+    public static void punch(float amount) {
+        punchStart = net.minecraft.util.Util.getMeasuringTimeMs();
+        punchAmount = Math.max(punchAmount * 0.5f, amount) * (float) Math.min(1.0, ConfigManager.get().client.cameraShake);
+    }
+
+    /** Multiplier for the field of view right now (1 = none). */
+    public static float fovScale() {
+        if (punchStart < 0) return 1f;
+        float t = (net.minecraft.util.Util.getMeasuringTimeMs() - punchStart) / 1000f;
+        if (t > 0.45f) { punchStart = -1L; return 1f; }
+        // in over 40 ms, then a damped spring back that overshoots slightly wide
+        float k = t < 0.04f ? t / 0.04f : (float) (Math.exp(-(t - 0.04f) * 11.0) * Math.cos((t - 0.04f) * 16.0));
+        return 1f - punchAmount * k;
+    }
+
     private static float noise(float t, float seed) {
         return (MathHelper.sin(t * 1.7f + seed) * 0.5f + MathHelper.sin(t * 3.1f + seed * 2.3f) * 0.3f
                 + MathHelper.sin(t * 5.3f + seed * 4.1f) * 0.2f);

@@ -117,6 +117,16 @@ public final class NukeClient {
             var sound = title.startsWith("red") ? ModSounds.RED_INCANT : title.startsWith("blue") ? ModSounds.BLUE_INCANT : ModSounds.PURPLE_INCANT;
             mc.getSoundManager().play(PositionedSoundInstance.master(sound, 0.94f + 0.05f * word, 0.9f));
         }
+        // anime beats on top of the cut: speed lines on the fastest moves, impact frames on the heaviest hits
+        switch (k) {
+            case T_THROW + 2 -> HudOverlay.speedLines(0.7f, 0.55f);                                // Red sent into the sky
+            case T_BOOST -> HudOverlay.speedLines(0.9f, 0.5f);                                     // Blue boosted
+            case T_LEAP -> HudOverlay.speedLines((T_LEAP_END - T_LEAP) / 20f + 0.2f, 1.0f);       // the leap
+            case T_COLLIDE - 30 -> HudOverlay.speedLines(1.5f, 0.85f);                            // the rush in
+            case T_COLLIDE -> HudOverlay.impactFrames(1.0f);                                       // Red meets Blue
+            case T_BLOOM -> HudOverlay.impactFrames(0.6f);                                         // the mass erupts
+            default -> {}
+        }
         if (k == T_BLOOM + 10 && CutsceneDirector.active()) HudOverlay.flash(1.0f, 1f, 0.9f, 1f);   // clip 20.5 s
         if (k == T_BLOOM + 8) HudOverlay.title("purple", T_GLINT - T_BLOOM - 10);
     }

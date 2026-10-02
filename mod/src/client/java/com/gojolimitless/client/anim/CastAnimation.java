@@ -25,7 +25,7 @@ import org.joml.Vector4f;
 public final class CastAnimation implements IAnimation {
     static final String[] PA_NAMES = {"head", "torso", "rightArm", "leftArm", "rightLeg", "leftLeg", "body"};
     static final String[] PARTS = {"head", "body", "right_arm", "left_arm", "right_leg", "left_leg", "root"};
-    static final int HEAD = 0, TORSO = 1, RIGHT_ARM = 2, LEFT_ARM = 3, ROOT = 6;
+    public static final int HEAD = 0, TORSO = 1, RIGHT_ARM = 2, LEFT_ARM = 3, ROOT = 6;
 
     private final AbstractClientPlayerEntity player;
     private PoseManager.Pick pick;
@@ -66,7 +66,11 @@ public final class CastAnimation implements IAnimation {
         for (int i = 0; i < 7; i++) { hasRot[i] = hasPos[i] = hasBend[i] = false; }
         rightHand = leftHand = PoseAnimation.HandSample.NONE;
         weight = 0f;
-        if (pick == null) { appliedValid = false; return; }
+        if (pick == null) {
+            appliedValid = false;
+            java.util.Arrays.fill(sRotOk, false); java.util.Arrays.fill(sPosOk, false); java.util.Arrays.fill(sBendOk, false);
+            return;
+        }
         PoseAnimation a = pick.anim();
         float t = pick.time();
         if (a != null) {
@@ -92,6 +96,62 @@ public final class CastAnimation implements IAnimation {
             weight = pick.weight();
         }
         if (pick.adjust() != null) pick.adjust().apply(this, progress);
+        physics(progress);
+    }
+
+    // ---------------------------------------------------------------- body physics
+    // Each part chases its animated pose through a damped spring: arms lag a touch and overshoot, the torso follows,
+    // legs and head stay firm. Keyframed moves stop reading as rigid tweens, switching between animations (charge →
+    // release) never pops, and kick() adds recoil. Natural frequency (rad/s) and damping ratio per part:
+    //                                       head  torso rArm  lArm  rLeg  lLeg  root
+    private static final float[] OMEGA = {32f, 25f, 20f, 20f, 30f, 30f, 23f};
+    private static final float[] ZETA = {0.8f, 0.7f, 0.56f, 0.56f, 0.85f, 0.85f, 0.68f};
+    private final float[][] sRot = new float[7][3], vRot = new float[7][3], sPos = new float[7][3], vPos = new float[7][3],
+            sBend = new float[7][2], vBend = new float[7][2];
+    private final boolean[] sRotOk = new boolean[7], sPosOk = new boolean[7], sBendOk = new boolean[7];
+    private float lastPhysics = -1f;
+
+    private void physics(float progress) {
+        float strength = (float) ConfigManager.get().client.animationPhysics;
+        float dt = lastPhysics < 0f ? 0f : MathHelper.clamp((progress - lastPhysics) / 20f, 0f, 0.1f);
+        lastPhysics = progress;
+        for (int i = 0; i < 7; i++) {
+            float om = strength > 0.01f ? OMEGA[i] / strength : 0f;
+            sRotOk[i] = follow(hasRot[i], sRotOk[i], rot[i], sRot[i], vRot[i], om, ZETA[i], dt);
+            sPosOk[i] = follow(hasPos[i], sPosOk[i], pos[i], sPos[i], vPos[i], om, ZETA[i], dt);
+            sBendOk[i] = follow(hasBend[i], sBendOk[i], bend[i], sBend[i], vBend[i], om, ZETA[i], dt);
+        }
+    }
+
+    /** Advances one spring toward {@code target} and writes the result back into it. Returns whether it is live. */
+    private static boolean follow(boolean has, boolean live, float[] target, float[] x, float[] v, float omega, float zeta, float dt) {
+        if (!has || omega <= 0f) return false;
+        if (!live) {                                       // starts at rest on its pose: nothing swings in from zero
+            System.arraycopy(target, 0, x, 0, x.length);
+            java.util.Arrays.fill(v, 0f);
+            return true;
+        }
+        int n = Math.max(1, (int) Math.ceil(dt * 240f));  // small steps: stable at any frame rate
+        float h = dt / n;
+        for (int s = 0; s < n; s++) {
+            for (int c = 0; c < x.length; c++) {
+                float a = omega * omega * (target[c] - x[c]) - 2f * zeta * omega * v[c];
+                v[c] += a * h;
+                x[c] += v[c] * h;
+            }
+        }
+        System.arraycopy(x, 0, target, 0, x.length);
+        return true;
+    }
+
+    /**
+     * Recoil: an angular velocity kick (rad/s, model axes) to a part's spring, e.g. the casting arm thrown up when
+     * Red fires. Parts not animated right now ignore it.
+     */
+    public void kick(int part, float px, float py, float pz) {
+        if (!sRotOk[part]) return;
+        float s = (float) Math.min(1.5, ConfigManager.get().client.animationPhysics);
+        vRot[part][0] += px * s; vRot[part][1] += py * s; vRot[part][2] += pz * s;
     }
 
     // ---------------------------------------------------------------- procedural access (PoseManager adjusters)

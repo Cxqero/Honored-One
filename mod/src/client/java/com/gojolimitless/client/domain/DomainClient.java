@@ -127,7 +127,7 @@ public final class DomainClient {
         boolean inside = d.getPos().distanceTo(cam) <= d.getRadius() + 0.5;
         boolean mine = ownedByMe(d);
         if (d.isInstant()) {
-            if (k == I_VOID && inside) HudOverlay.flash(0.5f, 0.85f, 0.9f, 1f);
+            if (k == I_VOID && inside) { HudOverlay.flash(0.5f, 0.85f, 0.9f, 1f); HudOverlay.impactFrames(0.75f); }
             if (k == I_WIPE - 1 && inside) InsertPlayer.play("domain_ink_wipe");
             if (k == I_WIPE + 11 && inside) HudOverlay.flash(0.9f, 1f, 1f, 1f);
             if (k == 0 && mine) HudOverlay.title("domain", 26);
@@ -136,7 +136,7 @@ public final class DomainClient {
         if (k == 4 && mine) LoopTextures.preload("void_pano", 0);
         if (k == 20 && mine) HudOverlay.title("domain", 40);
         if (k == D_OPEN - 30) { LoopTextures.preload("void_pano", 0); LoopTextures.preload("void_hole", 0); }
-        if (k == D_FLASH && inside) HudOverlay.flash(1.0f, 1f, 1f, 1f);
+        if (k == D_FLASH && inside) { HudOverlay.flash(1.0f, 1f, 1f, 1f); HudOverlay.impactFrames(0.8f); }
         if (k == D_OPEN && inside && !LOOPING.contains(d.getId())) {
             LOOPING.add(d.getId());
             mc.getSoundManager().play(new TrackedLoopSound(ModSounds.DOMAIN_VOID, () -> mc.gameRenderer.getCamera().getPos(),

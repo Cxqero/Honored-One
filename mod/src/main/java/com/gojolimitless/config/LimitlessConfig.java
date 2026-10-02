@@ -351,6 +351,13 @@ public class LimitlessConfig {
         public boolean poses = true;
         @Comment("In first person, show your arms doing the hand signs while casting.")
         public boolean firstPersonArms = true;
+        @Comment("Body physics on the casting animations: arms and torso follow through, overshoot a little and settle, and big casts kick the body back. 0 = off (raw keyframes), 1 = default, 2 = loose.")
+        @Range(min = 0, max = 2, step = 0.1)
+        public double animationPhysics = 1.0;
+        @Comment("Anime impact frames: a few inverted black/white frames on the biggest hits (strobes; scaled by the flash strength, off at 0).")
+        public boolean impactFrames = true;
+        @Comment("Anime speed lines at the edge of the screen during the fastest moments (the nuke's leap and rush, Purple's launch).")
+        public boolean speedLines = true;
         @Comment("Inside Unlimited Void the world is replaced by the void (terrain hidden, everyone floats in space).")
         public boolean domainHideTerrain = true;
         @Comment("Show the giant black hole inside Unlimited Void.")

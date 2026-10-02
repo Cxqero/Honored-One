@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class GameRendererMixin {
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
     private void gojolimitless$fov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
-        if (CutsceneDirector.active()) cir.setReturnValue((double) CutsceneDirector.fov());
+        double fov = CutsceneDirector.active() ? CutsceneDirector.fov() : cir.getReturnValueD();
+        cir.setReturnValue(fov * com.gojolimitless.client.cam.CameraShake.fovScale());
     }
 
     @Inject(method = "renderWorld", require = 0, at = @At(value = "INVOKE", shift = At.Shift.AFTER,

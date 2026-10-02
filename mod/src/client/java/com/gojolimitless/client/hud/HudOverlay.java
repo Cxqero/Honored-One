@@ -39,6 +39,102 @@ public final class HudOverlay {
 
     public static void setCharge(float c) { charge = c; }
 
+    // ---------------------------------------------------------------- anime impact frames and speed lines
+    // Both are drawn on the HUD layer, after shaderpacks, so they look the same on every pack.
+    private static long impactStart = -1L;
+    private static float impactStrength;
+    private static long speedStart = -1L, speedEnd;
+    private static float speedStrength;
+
+    /**
+     * Impact frames: the screen flips to its negative for a frame or two, snaps back, flips again (the black/white
+     * strobe anime uses on its heaviest hits). Strength 0..1, scaled by the flash setting; off below 0.25 of it
+     * (photosensitivity) or with "Impact frames" off.
+     */
+    public static void impactFrames(float strength) {
+        var cc = ConfigManager.get().client;
+        if (!cc.impactFrames || cc.flashIntensity < 0.25) return;
+        impactStart = net.minecraft.util.Util.getMeasuringTimeMs();
+        impactStrength = MathHelper.clamp(strength * (float) Math.min(1.0, cc.flashIntensity / 0.85), 0f, 1f);
+    }
+
+    /** Speed lines rushing in from the screen edges for {@code seconds} (strength 0..1). */
+    public static void speedLines(float seconds, float strength) {
+        if (!ConfigManager.get().client.speedLines) return;
+        long now = net.minecraft.util.Util.getMeasuringTimeMs();
+        if (speedStart < 0 || now > speedEnd + 250) { speedStart = now; speedEnd = now; speedStrength = 0f; }
+        speedEnd = Math.max(speedEnd, now + (long) (seconds * 1000));
+        speedStrength = Math.max(speedStrength, strength);
+    }
+
+    /** 0 = normal, 1 = fully inverted, at this moment of the impact strobe. */
+    private static float impactInvert() {
+        if (impactStart < 0) return 0f;
+        long t = net.minecraft.util.Util.getMeasuringTimeMs() - impactStart;
+        float k;
+        if (t < 55) k = 1f;                  // negative
+        else if (t < 95) k = 0f;             // snap back
+        else if (t < 150) k = 1f;            // negative again
+        else if (t < 330) k = 1f - (t - 150) / 180f;
+        else { impactStart = -1L; return 0f; }
+        return k * impactStrength;
+    }
+
+    private static void drawImpact(DrawContext dc, int w, int h) {
+        float a = impactInvert();
+        if (a <= 0.003f) return;
+        // result = a·(1 − dst) + (1 − a)·dst: a blend between the frame and its negative
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR,
+                com.mojang.blaze3d.platform.GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        org.joml.Matrix4f m = dc.getMatrices().peek().getPositionMatrix();
+        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+        var bb = net.minecraft.client.render.Tessellator.getInstance().begin(
+                net.minecraft.client.render.VertexFormat.DrawMode.QUADS, net.minecraft.client.render.VertexFormats.POSITION_COLOR);
+        bb.vertex(m, 0, 0, 0).color(a, a, a, a);
+        bb.vertex(m, 0, h, 0).color(a, a, a, a);
+        bb.vertex(m, w, h, 0).color(a, a, a, a);
+        bb.vertex(m, w, 0, 0).color(a, a, a, a);
+        net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(bb.end());
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableBlend();
+    }
+
+    private static void drawSpeedLines(DrawContext dc, int w, int h) {
+        if (speedStart < 0) return;
+        long now = net.minecraft.util.Util.getMeasuringTimeMs();
+        if (now > speedEnd + 250) { speedStart = -1L; return; }
+        float in = MathHelper.clamp((now - speedStart) / 180f, 0f, 1f);
+        float out = MathHelper.clamp((speedEnd + 250 - now) / 250f, 0f, 1f);
+        float s = speedStrength * in * out;
+        if (s <= 0.003f) return;
+        int seed = (int) (now / 66);                      // a new set of lines every ~4 frames: the hand-drawn flicker
+        float cx = w / 2f, cy = h / 2f, diag = (float) Math.hypot(w, h) / 2f;
+        org.joml.Matrix4f m = dc.getMatrices().peek().getPositionMatrix();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+        var bb = net.minecraft.client.render.Tessellator.getInstance().begin(
+                net.minecraft.client.render.VertexFormat.DrawMode.TRIANGLES, net.minecraft.client.render.VertexFormats.POSITION_COLOR);
+        int n = 84;
+        for (int i = 0; i < n; i++) {
+            float h1 = hash(seed * 131 + i * 7 + 1), h2 = hash(seed * 131 + i * 7 + 2), h3 = hash(seed * 131 + i * 7 + 3);
+            float ang = (i + h1 * 0.9f) / n * MathHelper.TAU;
+            float half = (0.0025f + 0.009f * h2 * h2) * MathHelper.TAU;   // wedge width at the edge
+            float tip = diag * (0.42f + 0.38f * h3);                         // how far in it reaches (centre stays clear)
+            float base = diag * 1.05f;
+            float al = s * (0.25f + 0.45f * h2);
+            float c0 = MathHelper.cos(ang - half), s0 = MathHelper.sin(ang - half);
+            float c1 = MathHelper.cos(ang + half), s1 = MathHelper.sin(ang + half);
+            float ct = MathHelper.cos(ang), st = MathHelper.sin(ang);
+            bb.vertex(m, cx + c0 * base, cy + s0 * base, 0).color(1f, 1f, 1f, al);
+            bb.vertex(m, cx + ct * tip, cy + st * tip, 0).color(1f, 1f, 1f, 0f);
+            bb.vertex(m, cx + c1 * base, cy + s1 * base, 0).color(1f, 1f, 1f, al);
+        }
+        net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(bb.end());
+        RenderSystem.disableBlend();
+    }
+
     /** Shows textures/gui/title_<name>.png for {@code ticks} (ignored if the texture doesn't exist). */
     public static void title(String name, int ticks) {
         if (!ConfigManager.get().client.subtitles) return;
@@ -177,6 +273,8 @@ public final class HudOverlay {
         if (vo > 0.003f) victimFlood(dc, w, h, vo, td);
 
         com.gojolimitless.client.cutscene.InsertPlayer.render(dc);
+        drawSpeedLines(dc, w, h);
+        drawImpact(dc, w, h);
 
         float lb = com.gojolimitless.client.cutscene.CutsceneDirector.letterbox();
         if (lb > 0.002f) {

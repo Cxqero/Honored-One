@@ -74,6 +74,19 @@ Still open:
 - Smoke flipbook is grainy (rendered at 16 samples); re-rendering at 96.
 - Purple's leftover smoke reads near-black in daylight (by design since CP07; ask).
 
+### Overhaul pass 1: feel (2026-10-02)
+- **Body physics** on every casting animation (`CastAnimation.physics`): each part chases its animated pose through a
+  damped spring (arms ω 20 ζ 0.56, torso ω 25 ζ 0.7, legs/head firm), so moves follow through and settle, and
+  switching animations never pops. Setting: Client → "animationPhysics" (0 off, 1 default, 2 loose).
+- **Recoil**: Red firing, Purple launching and Blue's throw kick the caster's arms, torso and head back.
+- **Camera punch**: the view snaps in and springs back when your shot leaves your hands.
+- **Impact frames** (HUD, inverted-strobe): nuke collision, eruption and detonation; 200% Purple's collision;
+  full Red's detonation; the domain opening and the 0.2-second domain. Off when flash strength < 0.25.
+- **Speed lines** (HUD): nuke throw, boost, leap and rush; Purple's launch.
+- Verified in the dev client (nuke test): speed lines on the leap/rush, impact frames at the eruption.
+  Physics, recoil and the punch still need a look in game.
+- Note: the project's `tools/` folder was deleted by accident at one point; restored from git (`git restore tools/`).
+
 ### Offline
 Minecraft has no anti-cheat in the game itself. The online parts are multiplayer servers and Realms. Keeping it
 offline means: play the mod in Singleplayer worlds only, and don't join public servers with this profile.

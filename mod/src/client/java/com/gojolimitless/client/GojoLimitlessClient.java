@@ -113,8 +113,35 @@ public class GojoLimitlessClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(Payloads.InfinityState.ID, (p, ctx) -> infinityOn = p.on());
     }
 
+    /** Recoil on the caster's body (the player nearest the effect, within 10 blocks), scaled by power. */
+    private static void recoil(MinecraftClient mc, Vec3d at, float power, boolean bothArms) {
+        if (mc.world == null) return;
+        var pl = mc.world.getClosestPlayer(at.x, at.y, at.z, 10.0, false);
+        if (pl != null && pl == mc.player) CameraShake.punch(0.05f + 0.06f * power);   // the shot leaves your hands
+        var anim = com.gojolimitless.client.anim.CastAnimator.of(pl);
+        if (anim == null) return;
+        // arms thrown up and back (pitch < 0 lifts them), torso and head rock back
+        anim.kick(com.gojolimitless.client.anim.CastAnimation.RIGHT_ARM, -9f * power, 0f, 1.5f * power);
+        if (bothArms) anim.kick(com.gojolimitless.client.anim.CastAnimation.LEFT_ARM, -9f * power, 0f, -1.5f * power);
+        anim.kick(com.gojolimitless.client.anim.CastAnimation.TORSO, -3.5f * power, 0f, 0f);
+        anim.kick(com.gojolimitless.client.anim.CastAnimation.HEAD, -2.5f * power, 0f, 0f);
+    }
+
     private static void onFx(MinecraftClient mc, Payloads.Fx p) {
         Vec3d pos = new Vec3d(p.x(), p.y(), p.z());
+        switch (p.type()) {
+            case FxType.RED_FIRE -> recoil(mc, pos, 0.6f + 0.8f * p.a(), false);
+            case FxType.PURPLE_LAUNCH -> {
+                recoil(mc, pos, 0.8f + 0.6f * p.b(), true);
+                HudOverlay.speedLines(0.45f + 0.5f * p.b(), 0.5f + 0.5f * p.b());
+            }
+            case FxType.BLUE_THROW -> recoil(mc, pos, 0.6f, false);
+            // impact frames on the heaviest hits only
+            case FxType.NUKE_EXPLODE -> HudOverlay.impactFrames(1.0f);
+            case FxType.PURPLE_COLLIDE -> { if (p.b() > 0.5f) HudOverlay.impactFrames(0.7f); }
+            case FxType.RED_DETONATE -> { if (p.b() > 0.8f) HudOverlay.impactFrames(0.55f); }
+            default -> {}
+        }
         switch (p.type()) {
             case FxType.BLUE_FORM -> FxManager.add(new BlueFormFx(pos, p.a()));
             case FxType.BLUE_THROW -> {
