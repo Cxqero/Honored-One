@@ -115,3 +115,15 @@ Still open:
 ### Offline
 Minecraft has no anti-cheat in the game itself. The online parts are multiplayer servers and Realms. Keeping it
 offline means: play the mod in Singleplayer worlds only, and don't join public servers with this profile.
+
+### GitHub follow-ups (2026-10-02)
+- **GIFs didn't show:** GitHub's image proxy drops images over ~5 MB; the imgur GIFs were 4.5–45 MB.
+  `tools/make_gifs.py` re-encodes them into `wiki/images/gifs/` (largest width that fits under 4.7 MB, 400–560 px,
+  long clips split into parts: 200% Purple ×2, nuke ×3, domain ×3). README uses repo paths, the wiki uses
+  raw.githubusercontent URLs (served directly, no proxy). All 12 verified loading on GitHub.
+- **Email in history:** edits made on the GitHub website (the README edit, the wiki's first "Save page") were signed with
+  the account's Gmail. With Cxqero's OK: the repo was force-pushed back to the clean history (the web edit was
+  superseded by the GIF fix) and the wiki history was rebuilt as one commit. Both histories now only show no-reply
+  addresses. To keep it that way: GitHub → Settings → Emails → "Keep my email addresses private".
+- The setup script is idempotent: re-run `setup-github.bat` (or `tools/github-setup.ps1 -Yes`) to update; never needs
+  the repo deleted.
