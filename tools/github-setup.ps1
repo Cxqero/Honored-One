@@ -12,7 +12,8 @@ param(
     [string]$RepoName = "Honored-One",
     [string]$Description = "Honored One - Gojo moveset mod for Minecraft 1.21.1 (Fabric): Blue, Red, Hollow Purple, the nuke and Unlimited Void.",
     [switch]$SkipRelease,
-    [switch]$SkipWiki
+    [switch]$SkipWiki,
+    [switch]$DryRun          # check everything, upload nothing
 )
 # native tools (git, gh) print progress on stderr: errors are checked through $LASTEXITCODE instead
 $ErrorActionPreference = "Continue"
@@ -22,6 +23,7 @@ Set-Location $root
 function Say($msg, $color = "Cyan") { Write-Host ""; Write-Host "==> $msg" -ForegroundColor $color }
 function Fail($msg) { Write-Host ""; Write-Host "!! $msg" -ForegroundColor Red; exit 1 }
 function Ask($question) {
+    if ($DryRun) { Write-Host "$question [dry run: yes]"; return $true }
     $a = Read-Host "$question [y/n]"
     return $a -match '^(y|yes)$'
 }
@@ -29,6 +31,13 @@ function Ask($question) {
 # ------------------------------------------------------------------ tools
 Say "Checking git"
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { Fail "Git isn't installed. Get it from https://git-scm.com/download/win and run this again." }
+git rev-parse --is-inside-work-tree 2>$null | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Fail ("This folder isn't a git repository: $root`n" +
+          "   Run setup-github.bat from your project folder (the one with the full history, e.g. C:\mods\minecraft).`n" +
+          "   A downloaded or zipped copy of the source has no git history, so it can't be uploaded from.")
+}
+if ($DryRun) { Write-Host "DRY RUN: nothing will be created or uploaded." -ForegroundColor Yellow }
 
 Say "Finding the GitHub CLI"
 $gh = Join-Path $root ".tools\gh\bin\gh.exe"
@@ -72,7 +81,7 @@ if (-not (Ask "Publish to https://github.com/$repo as a PUBLIC repository?")) { 
 # git uses the GitHub CLI login for this project only (nothing changes in your global git settings);
 # commits use your private GitHub no-reply address, never your real email
 $cred = "!'" + ($gh -replace '\\', '/') + "' auth git-credential"
-git config credential.helper ""
+git config credential.helper '""'
 git config --add credential.helper $cred
 git config user.name $owner
 git config user.email $noreply
@@ -86,7 +95,9 @@ if ($big) { Fail "These files are over 50 MB, too big for GitHub: $big" }
 $dirty = git status --porcelain
 if ($dirty) {
     Write-Host $dirty
-    if (Ask "There are changes that aren't committed yet. Commit them now so they're included?") {
+    if ($DryRun) {
+        Write-Host "(dry run: a real run would offer to commit these changes first)"
+    } elseif (Ask "There are changes that aren't committed yet. Commit them now so they're included?") {
         git add -A
         git commit -m "Update"
     } else {
@@ -102,6 +113,21 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Heads-up: the older repository https://github.com/$owner/gojo-testing still exists." -ForegroundColor Yellow
     Write-Host "Its history comes from before the cleanup and may still contain personal details." -ForegroundColor Yellow
     Write-Host "This script won't touch it. To remove it: open it on GitHub -> Settings -> Danger Zone -> Delete." -ForegroundColor Yellow
+}
+
+if ($DryRun) {
+    $exists = $false
+    & $gh repo view $repo 2>$null | Out-Null
+    if ($LASTEXITCODE -eq 0) { $exists = $true }
+    $version = ((Get-Content "mod\gradle.properties") | Where-Object { $_ -like "mod_version=*" }).Split("=")[1].Trim()
+    $jar = Join-Path $root "checkpoints\gojo-limitless-$version.jar"
+    Say "Dry run: this is what a real run would do" "Yellow"
+    Write-Host ("- repository https://github.com/$repo : " + $(if ($exists) { "exists, push the new commits" } else { "create it (public), then push" }))
+    Write-Host ("- release v$version with " + $(if (Test-Path $jar) { "checkpoints\gojo-limitless-$version.jar (SHA-256 " + (Get-FileHash $jar -Algorithm SHA256).Hash.ToLower() + ")" } else { "NO jar found at $jar" }))
+    Write-Host ("- wiki: " + (Get-ChildItem (Join-Path $root "wiki") -Filter "*.md").Count + " pages from wiki\")
+    Write-Host "- git credential helper for this repo: $(git config --get-all credential.helper)"
+    Write-Host "- commits as: $(git config user.name) <$(git config user.email)>"
+    exit 0
 }
 
 # ------------------------------------------------------------------ repository
@@ -167,7 +193,7 @@ if (-not $SkipWiki) {
         [IO.File]::WriteAllText((Join-Path $tmp $f.Name), $text, (New-Object Text.UTF8Encoding($false)))
     }
     Push-Location $tmp
-    git config credential.helper ""
+    git config credential.helper '""'
     git config --add credential.helper $cred
     git config user.name $owner
     git config user.email $noreply
