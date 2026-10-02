@@ -37,29 +37,33 @@ Hollow Purple.
 Tap to create a singularity that pulls in nearby enemies. Hold for **Maximum Output Blue**, an orb that circles you and
 grows, tearing up the land. Let go to raise it overhead and let it disperse (or throw it, in the settings).
 
-<img src="https://i.imgur.com/uVBot6q.gif" width="600">
+<img src="wiki/images/gifs/blue.gif" width="480">
 
 ### Reversal Red · `G`
 Fire a blast of repulsive force that knocks enemies back. Hold for the incantation-powered Red with a much bigger impact.
 
-<img src="https://i.imgur.com/igktl0L.gif" width="600">
+<img src="wiki/images/gifs/red.gif" width="480">
 
 ### Hollow Purple · `V`
 Combine Blue and Red into a destructive projectile that tears through enemies and terrain. Hold for the full incantation
 and **200% Hollow Purple**.
 
-<img src="https://i.imgur.com/p06BBed.gif" width="400"> <img src="https://i.imgur.com/NZrW9Mn.gif" width="400">
+<img src="wiki/images/gifs/purple.gif" width="280"><br>
+<sub>Tap · then the 200% incantation and release:</sub><br>
+<img src="wiki/images/gifs/purple_200_1.gif" width="280"> <img src="wiki/images/gifs/purple_200_2.gif" width="280">
 
 ### Hollow Purple Nuke · `B`
 Bring Blue and Red together above your target for a massive cinematic detonation.
 
-<img src="https://i.imgur.com/vMpX3SG.gif" width="600">
+<img src="wiki/images/gifs/nuke_1.gif" width="280"> <img src="wiki/images/gifs/nuke_2.gif" width="280"> <img src="wiki/images/gifs/nuke_3.gif" width="280">
 
 ### Unlimited Void · `Z`
 Trap nearby enemies in your domain and leave them paralysed. Tap for the **0.2-second domain**, or hold for the full
 expansion.
 
-<img src="https://i.imgur.com/6qhZJRS.gif" width="400"> <img src="https://i.imgur.com/jwJu3tg.gif" width="400">
+<img src="wiki/images/gifs/domain_1.gif" width="280"> <img src="wiki/images/gifs/domain_2.gif" width="280"> <img src="wiki/images/gifs/domain_3.gif" width="280"><br>
+<sub>The 0.2-second domain:</sub><br>
+<img src="wiki/images/gifs/domain_instant.gif" width="280">
 
 ### Infinity · `N`
 Slow incoming projectiles to a stop and protect yourself from melee attacks and explosions. Enabled by default; press `N`

@@ -4,8 +4,10 @@
 > whatever it hits. Not an explosion: whatever it touches simply stops existing.
 
 <p align="center">
-  <img src="https://i.imgur.com/p06BBed.gif" width="420">
-  <img src="https://i.imgur.com/NZrW9Mn.gif" width="420">
+  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/purple.gif" width="300"><br>
+  <sub>Tap</sub><br><br>
+  <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/purple_200_1.gif" width="300"> <img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/purple_200_2.gif" width="300"><br>
+  <sub>200%: the incantation, then the release</sub>
 </p>
 
 ## Casting

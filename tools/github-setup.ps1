@@ -13,7 +13,8 @@ param(
     [string]$Description = "Honored One - Gojo moveset mod for Minecraft 1.21.1 (Fabric): Blue, Red, Hollow Purple, the nuke and Unlimited Void.",
     [switch]$SkipRelease,
     [switch]$SkipWiki,
-    [switch]$DryRun          # check everything, upload nothing
+    [switch]$DryRun,         # check everything, upload nothing
+    [switch]$Yes             # don't ask before publishing (for updates)
 )
 # native tools (git, gh) print progress on stderr: errors are checked through $LASTEXITCODE instead
 $ErrorActionPreference = "Continue"
@@ -24,6 +25,7 @@ function Say($msg, $color = "Cyan") { Write-Host ""; Write-Host "==> $msg" -Fore
 function Fail($msg) { Write-Host ""; Write-Host "!! $msg" -ForegroundColor Red; exit 1 }
 function Ask($question) {
     if ($DryRun) { Write-Host "$question [dry run: yes]"; return $true }
+    if ($Yes) { Write-Host "$question [yes]"; return $true }
     $a = Read-Host "$question [y/n]"
     return $a -match '^(y|yes)$'
 }

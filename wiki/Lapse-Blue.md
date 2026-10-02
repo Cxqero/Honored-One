@@ -3,7 +3,7 @@
 > **術式順転「蒼」 Cursed Technique Lapse: Blue.** Amplified cursed energy converges space to a single point, and
 > everything is pulled toward it.
 
-<p align="center"><img src="https://i.imgur.com/uVBot6q.gif" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/{{REPO}}/main/wiki/images/gifs/blue.gif" width="480"></p>
 
 ## Casting
 
